@@ -1,0 +1,429 @@
+# Changelog
+
+Newest first. Reconstructed from git history and the working record.
+Routine `sync.cmd` data refreshes are summarised, not listed individually.
+
+---
+
+# 2026-11-09 (later)
+
+## Task
+
+HTU design, and keep the schedule away from anyone without the link.
+
+## Changes
+
+- `template.html` restyled to HTU (the program's palette, Source Sans 3,
+  square corners, red strip, HTU logo, white day cards). Views unchanged.
+- The schedule is locked: AES-256-GCM in `index.html`, key in the link after
+  `#k=` (never sent to GitHub). Without it: "This page is locked". The program
+  writes only `index.html` and removes any `data.json` / `artifact.html`.
+  A longer repository name would not have protected anything: the repo is
+  public, so its name and files are visible.
+
+## Verification
+
+- Program preview: no names/courses/halls in the page source; with the key the
+  three views and `#k=..&p=name` work; no key / wrong key show the lock.
+  Phone width: no sideways scroll. Publish into a local stand-in for GitHub:
+  only index.html, opens with the key only, re-publish makes no version, new
+  link + publish makes one.
+
+---
+
+# 2026-11-09
+
+## Task
+
+Reopen the site, fed from the new Exam Committee program instead of Excel.
+
+## Changes
+
+- The program (`server/staff_site.py`, button "Publish to staff" on its Exams
+  page) builds the same data shape `build.py` made, from its own database, for
+  the semester in view; bakes it into `template.html`; writes `index.html`,
+  `artifact.html`, `data.json` here; commits and pushes. A publish with no
+  schedule change makes no commit.
+- Not published: email addresses and the committee's notes on exams
+  (`notes` is always empty).
+- Repository renamed on GitHub to `Fall2026-2027proctors` (and its About
+  link updated); the site is now https://setcommittee.github.io/Fall2026-2027proctors/
+  and the old `/SET-Exam-Proctors/` link returns 404. The program reads the
+  link from the folder's git remote.
+- `pages.yml`: push trigger restored.
+- Excel removed entirely, by request: `build.py`, `sync.cmd` and `vba/`
+  (workbook macros and scripts) deleted; README and CLAUDE.md rewritten
+  around the program.
+
+## Verification
+
+- Program test on a copy of its data, publishing into a clone whose remote is
+  a local bare repo: 26 exams, 113/113 seats, no "@" in the data, second
+  publish makes no commit. Page loads; schedule and `#p=<name>` views work.
+
+---
+
+# 2026-09-25
+
+## Task
+
+Stop the website now that the September exam period is over.
+
+## Changes
+
+- `index.html` replaced with a hand-written closing notice: same palette and
+  typefaces as the schedule, one line of highlighter, the committee address,
+  and no proctor names, rooms, times or student counts. It is no longer a
+  generated file.
+- Deleted the generated `data.json` and `artifact.html`, so nothing on the
+  public web carries the roster any more. Both remain in history at `1f6e98c`
+  and both regenerate from the workbook.
+- `.github/workflows/pages.yml` lost its `push` trigger, so a commit no longer
+  republishes. `workflow_dispatch` is kept, so the committee can still deploy
+  by hand from the Actions tab without reopening the automation.
+- `sync.cmd` now stops with an explanation instead of rebuilding, which would
+  otherwise overwrite the notice with the old schedule.
+- Answers Q-01. See DECISION-013 for why a notice rather than a 404.
+
+## Files/Components Affected
+
+- `index.html`, `sync.cmd`, `.github/workflows/pages.yml`
+- deleted: `data.json`, `artifact.html`
+
+## Verification
+
+- PASS - the notice is live at the same URL, 200, 3.7 KB (was 67 KB).
+- PASS - `data.json` and `artifact.html` both return 404.
+- PASS - `robots.txt` and the `noindex` tag survive on the new page.
+- PASS - the deploy landed ~30 s after the push; the following push, which
+  removed the trigger, correctly published nothing.
+
+## Remaining Issues
+
+- GitHub Pages itself is still switched on. The link resolves, by design. Only
+  the repository owner can turn it off, in Settings - Pages, and that is a
+  deliberate second step the committee has not asked for.
+- The workbook side is untouched: the Reminders and Assignments sheets still
+  work, and no email has ever been sent end to end (T-00, unchanged).
+
+## Next Step
+
+None. The project is closed until the next exam period; reopening is three
+steps, written at the top of `sync.cmd`.
+
+---
+
+# 2026-11-02
+
+## Task
+
+Let instructors request exam slots through a Microsoft Form, with the answers
+landing in the workbook (exam week 5-10 December 2026).
+
+## Changes
+
+- New `Requests` sheet and `mRequests` module (`vba/mRequests.bas`), installed by
+  `vba/install_requests.py <workbook>`. It reads the Forms response file
+  read-only, tidies each answer, flags problems in a Check column, and adds rows
+  to the Exam sheet only for those marked Approve. Nothing existing is edited.
+- Instructors type their name, course and times freely. Names are matched to the
+  Emails sheet; times like 9.30, 930, 2 pm are cleaned to hh:mm; dates outside the
+  exam week, unknown names and duplicates are flagged.
+- Two bugs found and fixed while testing: a variable named `cDate` collided with
+  VBA's `CDate()` (case-insensitive) so the import would not compile; and a
+  datetime handed to COM arrived shifted three hours (5 Dec became 4 Dec 21:00).
+
+## Verification
+
+Tested end to end on a COPY with fake answers: import, rerun adds nothing,
+approve adds exam rows with working Time Range formulas, old rows byte-identical,
+new exams appear on the Assignments list. NOT installed on the real workbook yet,
+and not tried against a real Forms response file.
+
+## Next Step
+
+Install on the real workbook once the form exists and the user agrees.
+
+---
+
+# 2026-09-12
+
+## Task
+
+Add a second kind of email - an assignment notice - and a durable sent flag
+for both kinds.
+
+## Changes
+
+- New **Assignments** sheet, same layout and behaviour as Reminders but with
+  its own wording: it announces a duty and says a reminder will follow.
+- New hidden **_SentLog** sheet recording when each kind of email was sent,
+  keyed by the exam rather than by row, so a rebuild never loses the flags
+  (DECISION-011). This was a latent bug: the old "Last sent" column was wiped
+  on every refresh.
+- Both list sheets gained a **Sent** column and a **Due** column. A reminder
+  is due within two days of the exam; an assignment is due as soon as the exam
+  is staffed. Either clears once sent.
+- New buttons: "Send due reminders", "Send all not yet sent", "Clear sent flag".
+- Message sheet now holds two sets of wording, reminder and assignment.
+- `BuildList` and `SendEmailRow` are shared by both sheets.
+
+## Files/Components Affected
+
+- `vba/mReminders.bas`, `vba/Reminders_sheet.bas`,
+  `vba/Assignments_sheet.bas` (new), `vba/update_vba.py`
+
+## Verification
+
+Installed on a copy first, then on the live workbook.
+
+- PASS - both lists build, 40 rows each; VBA compiles.
+- PASS - a flag written to the ledger survives a rebuild.
+- PASS - Due clears once an exam is marked sent.
+- PASS - assignment and reminder flags are independent for the same exam.
+- PASS - reminder Due appears only within two days (4 exams today).
+- PASS - the two emails read differently; committee wording preserved.
+- PASS - 40 of 43 addresses intact after installation.
+- NOT TESTED - a real send. Only the preview path has been exercised, as
+  before, since a test send would email colleagues.
+
+## Remaining Issues
+
+- Three coordinator addresses still missing.
+- No send has ever been exercised end to end.
+
+## Next Step
+
+Send one assignment email to a single exam to confirm the flag sets in
+practice, before using "Send all not yet sent".
+
+## Also today
+
+Two routine `sync.cmd` refreshes by the committee, at 00:45 and 09:44. The
+published site is current: 20 exams, 42/42 seats.
+
+---
+
+# 2026-09-12
+
+## Task
+
+Set up the project memory and development-context system.
+
+## Changes
+
+- Added `CLAUDE.md`, `PROJECT/` (requirements, architecture, decisions, status,
+  todo), `CHANGELOG/`, and the `project-maintenance` skill.
+- Documented ten permanent decisions taken between 2 and 5 September.
+- Recorded the current verified state: 20 exams, 42/42 seats, 40/43 addresses.
+
+## Files/Components Affected
+
+- `CLAUDE.md`, `PROJECT/*`, `CHANGELOG/CHANGELOG.md`,
+  `.claude/skills/project-maintenance/*`
+
+## Verification
+
+- Project inspected before writing: structure, git history, build output, live
+  site, workbook sheets and address completeness.
+- No project functionality touched.
+
+## Remaining Issues
+
+- Three coordinator addresses still missing.
+- Print stylesheet still unverified.
+
+## Next Step
+
+Ask whether any `TODO.md` high-priority item is wanted before 21 September.
+
+---
+
+# 2026-09-05 – 2026-09-09
+
+## Task
+
+Routine schedule refreshes by the committee.
+
+## Changes
+
+- Roughly ten `sync.cmd` runs, publishing schedule changes as assignments moved.
+- Exam period extended; the schedule now runs to 21 September.
+- The bad Date cell in row 36 was corrected in the workbook.
+- Exam count grew to 20; coverage reached 42/42 seats.
+
+## Files/Components Affected
+
+- `data.json`, `index.html`, `artifact.html` (all generated)
+
+## Verification
+
+- Each run publishes only if the build succeeds.
+
+## Remaining Issues
+
+- None arising.
+
+## Next Step
+
+None; routine operation.
+
+---
+
+# 2026-09-05
+
+## Task
+
+Fix the site being entirely blank, reported as "full schedule not working".
+
+## Changes
+
+- Found a stray `z` typed into the Date and Day cells of Exam row 36. It
+  reached the page and threw before anything rendered, so **every** view was
+  dead, not just the full schedule.
+- Root cause was deeper than the typo: `asDate` split on `-` and accepted any
+  three parts, so `"not-a-date"` returned an *Invalid Date* — truthy, and able
+  to slip past every downstream guard. Rewrote it to match `yyyy-mm-dd` and
+  range-check the result.
+- `build.py` now rejects non-dates, empties the field, and prints the offending
+  row so a typo is caught at sync time.
+- Earlier the same day: removed the "still needs a proctor" banner; added the
+  weekday to every date; restored the Full schedule search, day strip and
+  filters in the new style.
+
+## Files/Components Affected
+
+- `template.html`, `build.py`
+
+## Verification
+
+- Poisoned the data with four bad-date shapes — `z`, `not-a-date`,
+  `2026-13-45`, empty — and confirmed a clean load with no console errors and
+  all 19 exams rendered.
+- Confirmed the deployed site served the hardened parser.
+
+## Remaining Issues
+
+- Print stylesheet still unverified.
+
+## Next Step
+
+Offer the usability improvements; none were commissioned.
+
+---
+
+# 2026-09-04
+
+## Task
+
+Redesign the site, then reshape it to the committee's preferences.
+
+## Changes
+
+- Rebuilt the page around a "highlighted roster" — the whole schedule as a
+  ruled list with the viewer's rows marked in marigold (DECISION-007).
+- Fraunces + Karla, ink on warm paper, one accent colour.
+- `build.py` began emitting per-proctor room pairing, so the site, the Room
+  Plan sheet and the emails all agree.
+- Then, on request: restored the three view tabs, removed dark mode outright
+  (DECISION-008), dropped "roster" from the title.
+
+## Files/Components Affected
+
+- `template.html`, `build.py`
+
+## Verification
+
+- Light and dark browser settings, desktop and mobile; no console errors; no
+  horizontal page scroll at 375px.
+
+## Remaining Issues
+
+- Freshness stamp lost in the redesign and not replaced.
+
+## Next Step
+
+Restore the search and day strip the redesign had dropped.
+
+---
+
+# 2026-09-03
+
+## Task
+
+Build the reminder-email system in the workbook.
+
+## Changes
+
+- Created `Proctor Schedule by Date.xlsm` alongside the `.xlsx`, adding the
+  `Emails`, `Reminders`, `Room Plan` and `Message` sheets plus their VBA.
+- Filled 39 of 43 addresses by fuzzy-matching the committee directory. A first
+  pass produced three wrong matches — first-name-plus-incidental-overlap — which
+  a dry run caught before anything was written.
+- Diagnosed Excel "freezing" on send: Outlook was running headless with no
+  window, blocking every COM call. `GetOutlook` now logs MAPI on explicitly and
+  opens an Explorer window.
+- Added sender selection, an always-Cc list, per-proctor rooms in the body, and
+  moved the wording onto an editable `Message` sheet.
+- `build.py` switched to reading the `.xlsm` in preference to the `.xlsx`.
+
+## Files/Components Affected
+
+- `vba/mReminders.bas`, `vba/Reminders_sheet.bas`, `vba/update_vba.py`,
+  `vba/make_xlsm.py`, `vba/fill_emails.py`, `build.py`, `README.md`
+
+## Verification
+
+- VBA compiles; `EmailFor` resolves a known name; `RefreshRemindersCore`
+  returns the expected row count.
+- Preview opened a real Outlook draft with correct To and Cc and returned
+  without hanging. Every address was neutralised to `example.invalid` first.
+
+## Remaining Issues
+
+- Four coordinators without addresses (since reduced to three).
+- A real `.Send` never exercised, deliberately.
+
+## Next Step
+
+Add per-proctor rooms to the emails.
+
+---
+
+# 2026-09-02
+
+## Task
+
+Answer "which exams are still unproctored?", then build the site.
+
+## Changes
+
+- Audited the workbook. **Every exam was already fully proctored.** The
+  appearance of gaps came from broken formulas in the `Still Needed` column —
+  row 22 referenced row 25, and rows 23, 24, 33 and 35 had no formula at all.
+- Built `build.py` + `template.html` to generate a self-contained page.
+- Published to GitHub Pages; added `robots.txt` and `noindex` before making the
+  repo public.
+- Renamed the GitHub account, then moved the repo to a `SETcommittee`
+  organisation so the link is institutional rather than personal.
+- Wrote `sync.cmd`, the one-click rebuild-commit-push.
+
+## Files/Components Affected
+
+- `build.py`, `template.html`, `sync.cmd`, `README.md`,
+  `.github/workflows/pages.yml`, `robots.txt`
+
+## Verification
+
+- Build reported 33/33 seats filled across 18 sittings.
+- Cross-checked against the master SET exam schedule: all 15 exams present.
+- Site verified live: 200, correct content, `noindex` in place.
+
+## Remaining Issues
+
+- Page is world-readable (DECISION-003).
+- Spreadsheet formulas still broken in the workbook itself.
+
+## Next Step
+
+Reminder emails.

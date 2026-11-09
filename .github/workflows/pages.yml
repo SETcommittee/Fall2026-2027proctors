@@ -1,0 +1,46 @@
+name: Deploy proctor site
+
+# Publishes the site to GitHub Pages on every push to main. The page is built
+# on the committee's computer: since November 2026 by the Exam Committee
+# program ("Publish to staff" on its Exams page, server/staff_site.py), which
+# writes index.html / data.json / artifact.html here, commits and pushes.
+#
+# (Closed 2026-09-25 after the September period; reopened 2026-11 for the
+# program. To close it again, remove the "push" trigger below and publish a
+# closing notice as index.html.)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Let a running deploy finish; queue at most one more behind it.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fail if the site was never built
+        run: test -f index.html || { echo "index.html is missing - run sync.cmd"; exit 1; }
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
