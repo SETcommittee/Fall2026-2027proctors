@@ -1,906 +1,729 @@
 <title>Exam Duty | HTU</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23E8343F'/%3E%3Ctext x='16' y='21' font-family='Arial' font-weight='700' font-size='11' fill='white' text-anchor='middle'%3EHTU%3C/text%3E%3C/svg%3E">
+<meta name="theme-color" content="#E8343F">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700;800&display=swap">
 <style>
-  /* HTU look, the same as the Exam Committee program: HTU red on white and
-     light grey, Source Sans, square corners. Light only, by request. Every
-     colour is stated outright so the page keeps its look on any host. */
+  /* HTU look, as in the Exam Committee program: HTU red on white and light
+     grey, Source Sans, square corners. Light only. Built for phones first:
+     most staff open it from the link in an email or a chat. */
   :root {
     color-scheme: light;
-    --paper:      #F9F9F9;   /* HTU page ground */
-    --sheet:      #FFFFFF;
-    --paper-2:    #F3F3F3;
-    --ink:        #161613;   /* HTU text */
-    --ink-2:      #57595F;
-    --ink-3:      #6F7176;
-    --rule:       #E2E2E2;
-    --rule-2:     #EFEFEF;
-    --htu:        #E8343F;   /* HTU red */
-    --htu-dark:   #C8222D;
-    --mark:       #E8343F;
-    --mark-deep:  #C8222D;
-    --mark-soft:  #FDEBEC;
-    --pen:        #B3261E;
-    --pen-soft:   #FCEDEC;
-    --sans: "ScalaSansPro", "Scala Sans Pro", "Source Sans 3", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-    --serif: var(--sans);
+    --ground:   #F4F4F2;
+    --sheet:    #FFFFFF;
+    --wash:     #F7F7F6;
+    --ink:      #161613;
+    --ink-2:    #4E5056;
+    --ink-3:    #74767B;
+    --rule:     #E1E1DE;
+    --rule-2:   #EDEDEA;
+    --htu:      #E8343F;
+    --htu-deep: #B91F2A;
+    --htu-soft: #FDECEC;
+    --htu-tint: #FFF6F6;
+    --ok:       #1F7A4D;
+    --sans: "Source Sans 3", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    --w: 860px;
   }
-
   * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
   body {
-    margin: 0;
-    background: var(--paper);
-    color: var(--ink);
-    font-family: var(--sans);
-    font-size: 16px;
-    line-height: 1.5;
+    margin: 0; background: var(--ground); color: var(--ink);
+    font-family: var(--sans); font-size: 16px; line-height: 1.45;
     -webkit-font-smoothing: antialiased;
   }
+  button { font: inherit; color: inherit; }
+  .wrap { max-width: var(--w); margin: 0 auto; padding: 0 20px; }
+  .num { font-variant-numeric: tabular-nums; }
+  :focus-visible { outline: 2px solid var(--htu); outline-offset: 2px; }
 
-  /* ---------- HTU bars ---------- */
-  .htu-strip { background: var(--htu); color: #fff; font-size: 13px; font-weight: 600; letter-spacing: .02em; }
-  .htu-strip > div { max-width: 820px; margin: 0 auto; padding: 7px 22px; display: flex; gap: 10px; flex-wrap: wrap; }
-  .htu-strip span { opacity: .85; font-weight: 500; }
-  .htu-top { background: var(--sheet); border-bottom: 1px solid var(--rule); }
-  .htu-top > div { max-width: 820px; margin: 0 auto; padding: 14px 22px; display: flex; align-items: center; gap: 14px; }
-  .htu-top img { height: 38px; width: auto; display: block; }
-  .htu-top .wordmark { font-weight: 800; font-size: 26px; letter-spacing: .04em; color: var(--htu); }
-  .htu-top .sep { width: 1px; height: 30px; background: var(--rule); }
-  .htu-top b { font-size: 17px; font-weight: 700; }
+  /* ---------- top ---------- */
+  .strip { background: var(--htu); color: #fff; font-size: 13px; font-weight: 600; }
+  .strip .wrap { display: flex; gap: 10px; align-items: center; min-height: 32px; flex-wrap: wrap; }
+  .strip .soft { opacity: .85; font-weight: 500; }
+  .strip .upd { margin-left: auto; opacity: .9; font-weight: 500; }
+  .bar { background: var(--sheet); border-bottom: 1px solid var(--rule); }
+  .bar .wrap { display: flex; align-items: center; gap: 14px; min-height: 64px; }
+  .bar img { height: 36px; width: auto; display: block; }
+  .bar .wordmark { font-weight: 800; font-size: 24px; letter-spacing: .04em; color: var(--htu); }
+  .bar .sep { width: 1px; height: 30px; background: var(--rule); }
+  .bar .title { display: grid; line-height: 1.15; }
+  .bar .title b { font-size: 18px; font-weight: 800; }
+  .bar .title span { font-size: 13.5px; color: var(--ink-3); font-weight: 600; }
 
-  .sheet { max-width: 820px; margin: 0 auto; padding: 0 22px 96px; }
+  /* ---------- hero: who are you ---------- */
+  .hero { background: var(--sheet); border-bottom: 1px solid var(--rule); }
+  .hero .wrap { padding-top: 30px; padding-bottom: 26px; }
+  .hero h1 { margin: 0; font-size: clamp(28px, 6.4vw, 40px); line-height: 1.05; font-weight: 800; letter-spacing: -.01em; }
+  .hero h1::after { content: ""; display: block; width: 52px; height: 4px; background: var(--htu); margin-top: 12px; }
+  .hero .lede { margin: 12px 0 0; color: var(--ink-2); font-size: 16px; max-width: 56ch; }
 
-  /* ---------- masthead ---------- */
-  .masthead { padding: 34px 0 0; }
-  h1 {
-    font-weight: 700;
-    font-size: clamp(30px, 7vw, 44px);
-    line-height: 1.05;
-    letter-spacing: -.01em;
-    margin: 0;
-    text-wrap: balance;
-  }
-  h1::after { content: ""; display: block; width: 56px; height: 4px; background: var(--htu); margin-top: 14px; }
-  .masthead .where { margin: 14px 0 0; font-size: 15.5px; color: var(--ink-2); max-width: 52ch; }
-  .masthead .span {
-    margin: 4px 0 0; font-size: 15.5px; color: var(--ink); font-weight: 700;
-    font-variant-numeric: tabular-nums;
-  }
-
-  /* ---------- name picker ---------- */
-  .pick { position: relative; margin: 26px 0 0; }
+  .pick { position: relative; margin-top: 20px; max-width: 560px; }
   .pick-field {
-    display: flex; align-items: center; gap: 12px;
-    background: var(--sheet);
-    border: 1px solid var(--rule);
-    border-radius: 2px;
-    padding: 0 16px;
-    transition: border-color .14s ease, box-shadow .14s ease;
+    display: flex; align-items: center; gap: 10px;
+    background: var(--sheet); border: 2px solid var(--ink); padding: 0 14px;
   }
-  .pick-field:focus-within { border-color: var(--htu); box-shadow: 0 0 0 3px var(--mark-soft); }
+  .pick-field:focus-within { border-color: var(--htu); box-shadow: 0 0 0 4px var(--htu-soft); }
   .pick-field svg { flex: none; color: var(--ink-3); }
   .pick-field input {
-    flex: 1; min-width: 0;
-    font: inherit; font-size: 17px; font-weight: 500;
-    color: var(--ink); background: none; border: 0; outline: none;
-    padding: 15px 0;
+    flex: 1; min-width: 0; font: inherit; font-size: 18px; font-weight: 600;
+    background: none; border: 0; outline: none; padding: 14px 0; color: var(--ink);
   }
-  .pick-field input::placeholder { color: var(--ink-3); font-weight: 400; }
-  .pick-more {
-    appearance: none; background: none; border: 0;
-    font: inherit; font-size: 14px; font-weight: 700; color: var(--htu);
-    cursor: pointer; padding: 6px 0 6px 12px; white-space: nowrap;
-  }
-  .pick-more:hover { color: var(--htu-dark); text-decoration: underline; }
-  .pick-more:focus-visible { outline: 2px solid var(--htu); outline-offset: 3px; }
-
+  .pick-field input::placeholder { color: var(--ink-3); font-weight: 500; }
+  .pick-all { appearance: none; background: none; border: 0; cursor: pointer;
+    font-size: 14px; font-weight: 700; color: var(--htu); padding: 8px 0 8px 10px; white-space: nowrap; }
   .pick-list {
-    position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 40;
-    background: var(--sheet);
-    border: 1px solid var(--rule);
-    border-top: 3px solid var(--htu);
-    border-radius: 2px;
-    max-height: 320px; overflow-y: auto;
-    box-shadow: 0 1px 2px rgba(22,22,19,.06), 0 10px 28px -6px rgba(22,22,19,.18);
+    position: absolute; z-index: 50; left: 0; right: 0; top: calc(100% + 4px);
+    background: var(--sheet); border: 1px solid var(--rule); border-top: 3px solid var(--htu);
+    max-height: 340px; overflow-y: auto; box-shadow: 0 14px 34px -10px rgba(22,22,19,.28);
   }
-  .pick-list div[role="option"] {
-    display: flex; align-items: baseline; gap: 12px;
-    padding: 11px 16px; cursor: pointer;
-    border-bottom: 1px solid var(--rule-2);
-    font-size: 16px;
+  .pick-list [role="option"] {
+    display: flex; gap: 12px; align-items: baseline; padding: 12px 16px; cursor: pointer;
+    border-bottom: 1px solid var(--rule-2); font-size: 16px; font-weight: 600;
   }
-  .pick-list div[role="option"]:last-child { border-bottom: 0; }
-  .pick-list div.on { background: var(--mark-soft); }
-  .pick-list .tally {
-    margin-left: auto; font-size: 13.5px; color: var(--ink-3);
-    font-variant-numeric: tabular-nums; white-space: nowrap;
-  }
-  .pick-list .empty { padding: 20px 16px; color: var(--ink-3); }
+  .pick-list [role="option"]:last-child { border-bottom: 0; }
+  .pick-list [role="option"].on { background: var(--htu-soft); }
+  .pick-list .tally { margin-left: auto; font-size: 13.5px; font-weight: 500; color: var(--ink-3); white-space: nowrap; }
+  .pick-list .empty { padding: 18px 16px; color: var(--ink-3); }
 
-  /* ---------- your standing ---------- */
-  .standing {
-    margin-top: 22px; padding: 14px 16px;
-    background: var(--sheet); border: 1px solid var(--rule); border-left: 4px solid var(--htu);
-    display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 24px;
-  }
-  .standing:empty { display: none; }
-  .standing .name { font-weight: 700; font-size: 22px; line-height: 1.15; }
-  .standing .facts { font-size: 15px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
-  .standing .facts b { font-weight: 700; color: var(--ink); }
-  .standing .drop {
-    margin-left: auto; appearance: none; background: none;
-    border: 0; border-bottom: 1.5px solid var(--rule);
-    font: inherit; font-size: 14px; font-weight: 600; color: var(--ink-3);
-    cursor: pointer; padding: 2px 0;
-  }
-  .standing .drop:hover { color: var(--htu); border-bottom-color: var(--htu); }
-  .standing .drop:focus-visible { outline: 2px solid var(--htu); outline-offset: 3px; }
+  /* ---------- hero: it's you ---------- */
+  .me-head { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px 18px; }
+  .me-head .hi { font-size: 14px; font-weight: 700; color: var(--htu); text-transform: uppercase; letter-spacing: .06em; }
+  .me-head h1 { flex-basis: 100%; }
+  .me-head .notyou { appearance: none; background: none; border: 0; cursor: pointer; padding: 4px 0;
+    font-size: 14px; font-weight: 700; color: var(--ink-3); text-decoration: underline; text-underline-offset: 3px; }
+  .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; margin-top: 20px;
+    border: 1px solid var(--rule); background: var(--sheet); max-width: 560px; }
+  .stats div { padding: 12px 14px; border-right: 1px solid var(--rule); }
+  .stats div:last-child { border-right: 0; }
+  .stats b { display: block; font-size: 28px; font-weight: 800; line-height: 1.05; }
+  .stats span { font-size: 13px; color: var(--ink-3); font-weight: 600; }
 
-  /* ---------- view switch ---------- */
-  .views {
-    display: flex; gap: 4px; flex-wrap: wrap;
-    margin-top: 24px;
-    border-bottom: 1px solid var(--rule);
+  /* ---------- the next duty ---------- */
+  .next { margin-top: 22px; background: var(--sheet); border: 1px solid var(--rule); border-top: 5px solid var(--htu); }
+  .next-top { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; padding: 16px 18px 0; }
+  .next-top .lbl { font-size: 13px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; color: var(--htu); }
+  .badge { display: inline-block; font-size: 13px; font-weight: 800; padding: 2px 9px; background: var(--htu); color: #fff; }
+  .badge.calm { background: var(--ink); }
+  .next-main { display: grid; grid-template-columns: 1fr auto; gap: 14px 22px; padding: 10px 18px 18px; align-items: end; }
+  .next-when { font-size: clamp(22px, 5vw, 30px); font-weight: 800; line-height: 1.1; }
+  .next-when small { display: block; font-size: 17px; font-weight: 600; color: var(--ink-2); margin-top: 4px; }
+  .next-course { margin-top: 10px; font-size: 18px; font-weight: 700; }
+  .next-meta { margin-top: 2px; font-size: 14.5px; color: var(--ink-3); }
+  .hall { text-align: center; border: 2px solid var(--ink); padding: 8px 16px 10px; min-width: 120px; }
+  .hall span { display: block; font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+  .hall b { display: block; font-size: clamp(30px, 8vw, 42px); font-weight: 800; line-height: 1; letter-spacing: .01em; }
+  .hall.tbc b { font-size: 18px; color: var(--ink-3); padding-top: 6px; }
+  .with { border-top: 1px solid var(--rule-2); padding: 12px 18px; font-size: 14.5px; color: var(--ink-2); }
+  .with b { color: var(--ink); }
+  .with ul { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 4px; }
+  .with li { display: flex; justify-content: space-between; gap: 12px; }
+  .acts { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 18px 18px; }
+  .btn {
+    appearance: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+    font-size: 14.5px; font-weight: 700; text-decoration: none;
+    padding: 9px 14px; border: 1.5px solid var(--htu); color: var(--htu); background: var(--sheet);
   }
-  .views button {
-    appearance: none; background: none; border: 0; cursor: pointer;
-    font: inherit; font-size: 15.5px; font-weight: 600;
-    color: var(--ink-2);
-    padding: 10px 14px 11px;
-    margin-bottom: -1px;
-    border-bottom: 3px solid transparent;
-    transition: color .12s ease, border-color .12s ease;
-  }
-  .views button:hover { color: var(--htu); }
-  .views button[aria-selected="true"] { color: var(--ink); font-weight: 700; border-bottom-color: var(--htu); }
-  .views button:focus-visible { outline: 2px solid var(--htu); outline-offset: -2px; }
+  .btn:hover { background: var(--htu-tint); }
+  .btn.solid { background: var(--htu); color: #fff; }
+  .btn.solid:hover { background: var(--htu-deep); border-color: var(--htu-deep); }
+  .btn svg { flex: none; }
 
-  .tools { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
-  .tool {
-    appearance: none; cursor: pointer; font: inherit;
-    font-size: 14px; font-weight: 700;
-    background: var(--sheet); color: var(--htu);
-    border: 1.5px solid var(--htu); border-radius: 2px;
-    padding: 7px 14px;
-    transition: color .14s ease, background .14s ease;
+  /* ---------- tabs ---------- */
+  .tabs { position: sticky; top: 0; z-index: 30; background: var(--ground); border-bottom: 1px solid var(--rule); }
+  .tabs .wrap { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; }
+  .tabs button {
+    appearance: none; background: none; border: 0; cursor: pointer; white-space: nowrap;
+    font-size: 15.5px; font-weight: 700; color: var(--ink-2);
+    padding: 13px 14px 12px; border-bottom: 3px solid transparent; margin-bottom: -1px;
   }
-  .tool:hover { color: #fff; background: var(--htu); }
-  .tool:focus-visible { outline: 2px solid var(--htu); outline-offset: 2px; }
+  .tabs button:hover { color: var(--htu); }
+  .tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--htu); }
+  .tabs .n { display: inline-block; min-width: 20px; padding: 0 6px; margin-left: 6px; font-size: 12.5px;
+    background: var(--htu); color: #fff; text-align: center; }
 
-  /* ---------- search + filters on the full schedule ---------- */
-  .searchbar {
-    display: flex; align-items: center; gap: 12px;
-    margin-top: 24px;
-    background: var(--sheet);
-    border: 1px solid var(--rule);
-    border-radius: 2px;
-    padding: 0 16px;
-  }
-  .searchbar:focus-within { border-color: var(--htu); box-shadow: 0 0 0 3px var(--mark-soft); }
-  .searchbar svg { flex: none; color: var(--ink-3); }
-  .searchbar input {
-    flex: 1; min-width: 0; font: inherit; font-size: 16px;
-    color: var(--ink); background: none; border: 0; outline: none; padding: 13px 0;
-  }
-  .searchbar input::placeholder { color: var(--ink-3); }
-  .searchbar .clear {
-    appearance: none; background: none; border: 0; cursor: pointer;
-    font: inherit; font-size: 13.5px; font-weight: 600; color: var(--ink-3);
-    padding: 6px 0 6px 10px;
-  }
-  .searchbar .clear:hover { color: var(--htu); }
+  main { padding-bottom: 80px; }
+  .section-h { display: flex; align-items: baseline; gap: 12px; margin: 30px 0 0; }
+  .section-h h2 { margin: 0; font-size: 20px; font-weight: 800; }
+  .section-h .aside { margin-left: auto; font-size: 14px; color: var(--ink-3); font-weight: 600; }
 
-  /* the day strip: each tile carries one dot per exam that day */
-  .strip {
-    display: flex; gap: 8px; overflow-x: auto;
-    margin-top: 16px; padding: 2px 1px 10px;
-    scrollbar-width: thin;
-  }
-  .dtile {
-    flex: 0 0 auto; width: 64px;
-    appearance: none; cursor: pointer; font: inherit;
-    background: var(--sheet); color: var(--ink);
-    border: 1px solid var(--rule); border-radius: 2px;
-    padding: 8px 4px 7px; text-align: center;
-    transition: border-color .12s ease, background .12s ease;
-  }
-  .dtile:hover { border-color: var(--htu); }
-  .dtile:focus-visible { outline: 2px solid var(--htu); outline-offset: 2px; }
-  .dtile .wd { display: block; font-size: 11.5px; font-weight: 700; color: var(--ink-3); text-transform: uppercase; letter-spacing: .04em; }
-  .dtile .dn { display: block; font-weight: 700; font-size: 25px; line-height: 1.1; font-variant-numeric: tabular-nums; }
-  .dtile .mo { display: block; font-size: 11px; color: var(--ink-3); }
-  .dtile .dots { display: flex; gap: 3px; justify-content: center; margin-top: 6px; min-height: 6px; }
-  .dtile .dots i { width: 5px; height: 5px; border-radius: 50%; background: var(--ink-3); }
-  .dtile .dots i.short { background: var(--htu); }
-  .dtile.today { border-color: var(--htu); box-shadow: inset 0 -3px 0 var(--htu); }
-  .dtile.gone { opacity: .45; }
-  .dtile[aria-pressed="true"] { background: var(--htu); border-color: var(--htu); color: #fff; }
-  .dtile[aria-pressed="true"] .wd,
-  .dtile[aria-pressed="true"] .mo { color: #fff; }
-  .dtile[aria-pressed="true"] .dots i { background: #fff; }
+  /* ---------- a list of duties (mine) ---------- */
+  .duties { margin-top: 12px; background: var(--sheet); border: 1px solid var(--rule); }
+  .duty { display: grid; grid-template-columns: 64px 1fr auto; gap: 4px 16px; align-items: center;
+    padding: 14px 16px; border-bottom: 1px solid var(--rule-2); }
+  .duty:last-child { border-bottom: 0; }
+  .duty.gone { opacity: .5; }
+  .dbox { text-align: center; border: 1px solid var(--rule); padding: 5px 0 6px; background: var(--wash); }
+  .dbox .wd { display: block; font-size: 11.5px; font-weight: 800; color: var(--ink-3); text-transform: uppercase; letter-spacing: .05em; }
+  .dbox .dn { display: block; font-size: 24px; font-weight: 800; line-height: 1.05; }
+  .dbox .mo { display: block; font-size: 11.5px; color: var(--ink-3); font-weight: 600; }
+  .duty.soon .dbox { background: var(--htu); border-color: var(--htu); color: #fff; }
+  .duty.soon .dbox .wd, .duty.soon .dbox .mo { color: #fff; }
+  .duty .c { font-size: 16.5px; font-weight: 700; }
+  .duty .m { font-size: 14px; color: var(--ink-3); margin-top: 1px; }
+  .duty .m b { color: var(--ink-2); }
+  .plate { display: inline-block; font-weight: 800; font-size: 15px; padding: 3px 10px; border: 1.5px solid var(--ink); background: var(--sheet); white-space: nowrap; }
+  .plate.tbc { border-style: dashed; border-color: var(--ink-3); color: var(--ink-3); font-weight: 600; font-size: 13px; }
+  .plate.mine { background: var(--htu); border-color: var(--htu); color: #fff; }
+  .duty .cal { grid-column: 2 / -1; display: flex; gap: 14px; flex-wrap: wrap; margin-top: 4px; }
+  .link { appearance: none; background: none; border: 0; padding: 0; cursor: pointer;
+    font-size: 14px; font-weight: 700; color: var(--htu); text-decoration: underline; text-underline-offset: 3px; }
+  .link:hover { color: var(--htu-deep); }
 
-  .filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 6px; }
-  .filters .sep { width: 1px; height: 18px; background: var(--rule); margin: 0 4px; }
-  .filters button {
-    appearance: none; cursor: pointer; font: inherit;
-    font-size: 13.5px; font-weight: 600;
-    background: var(--sheet); color: var(--ink-2);
-    border: 1px solid var(--rule); border-radius: 2px;
-    padding: 6px 12px;
-    transition: color .12s ease, border-color .12s ease;
-  }
-  .filters button:hover { color: var(--htu); border-color: var(--htu); }
-  .filters button:focus-visible { outline: 2px solid var(--htu); outline-offset: 2px; }
-  .filters button[aria-pressed="true"] { color: #fff; border-color: var(--htu); background: var(--htu); }
+  .tools { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
 
-  .count {
-    margin: 22px 0 0; font-size: 14px; font-weight: 700; color: var(--ink-3);
-    font-variant-numeric: tabular-nums; text-transform: uppercase; letter-spacing: .04em;
-  }
+  /* ---------- full schedule ---------- */
+  .search { display: flex; align-items: center; gap: 10px; margin-top: 22px; background: var(--sheet);
+    border: 1px solid var(--rule); padding: 0 14px; }
+  .search:focus-within { border-color: var(--htu); box-shadow: 0 0 0 3px var(--htu-soft); }
+  .search svg { flex: none; color: var(--ink-3); }
+  .search input { flex: 1; min-width: 0; font: inherit; font-size: 16px; background: none; border: 0; outline: none; padding: 13px 0; }
+  .search .link { font-size: 13.5px; color: var(--ink-3); }
 
-  /* ---------- the schedule: one white card per day ---------- */
-  .day { margin-top: 22px; background: var(--sheet); border: 1px solid var(--rule); padding: 0 18px; }
-  .day-mark {
-    display: flex; align-items: baseline; gap: 12px;
-    margin: 0 -18px; padding: 12px 18px 10px;
-    border-bottom: 1px solid var(--rule);
-    background: var(--paper-2);
-  }
-  .day-mark .num { font-weight: 800; font-size: 28px; line-height: 1; color: var(--htu); font-variant-numeric: tabular-nums; }
-  .day-mark .mon { font-weight: 700; font-size: 18px; color: var(--ink); }
-  .day-mark .wd { font-size: 14.5px; color: var(--ink-2); font-weight: 500; }
-  .day-mark .when { margin-left: auto; font-size: 13px; font-weight: 700; color: var(--ink-2); text-transform: uppercase; letter-spacing: .04em; }
+  .days { display: flex; gap: 8px; overflow-x: auto; padding: 14px 1px 8px; scrollbar-width: thin; }
+  .dt { flex: 0 0 auto; width: 62px; appearance: none; cursor: pointer; text-align: center;
+    background: var(--sheet); border: 1px solid var(--rule); padding: 7px 2px 6px; }
+  .dt:hover { border-color: var(--htu); }
+  .dt .wd { display: block; font-size: 11px; font-weight: 800; color: var(--ink-3); text-transform: uppercase; letter-spacing: .05em; }
+  .dt .dn { display: block; font-size: 23px; font-weight: 800; line-height: 1.1; }
+  .dt .k { display: block; font-size: 11px; color: var(--ink-3); font-weight: 600; }
+  .dt.today { box-shadow: inset 0 -3px 0 var(--htu); border-color: var(--htu); }
+  .dt.gone { opacity: .45; }
+  .dt.has-mine .k { color: var(--htu); font-weight: 800; }
+  .dt[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: #fff; }
+  .dt[aria-pressed="true"] .wd, .dt[aria-pressed="true"] .k { color: #fff; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 4px; }
+  .chips .gap { width: 1px; height: 18px; background: var(--rule); margin: 0 4px; }
+  .chip { appearance: none; cursor: pointer; font-size: 13.5px; font-weight: 700; color: var(--ink-2);
+    background: var(--sheet); border: 1px solid var(--rule); padding: 6px 11px; }
+  .chip:hover { border-color: var(--htu); color: var(--htu); }
+  .chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: #fff; }
+
+  .count { margin: 18px 0 0; font-size: 13px; font-weight: 800; color: var(--ink-3); text-transform: uppercase; letter-spacing: .06em; }
+
+  .day { margin-top: 16px; background: var(--sheet); border: 1px solid var(--rule); }
+  .day-h { display: flex; align-items: baseline; gap: 10px; padding: 11px 16px 10px; background: var(--wash); border-bottom: 1px solid var(--rule); }
+  .day-h .dn { font-size: 26px; font-weight: 800; line-height: 1; color: var(--htu); }
+  .day-h .mo { font-size: 17px; font-weight: 800; }
+  .day-h .wd { font-size: 14.5px; color: var(--ink-2); font-weight: 600; }
+  .day-h .rel { margin-left: auto; font-size: 12.5px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); }
   .day.is-today { border-color: var(--htu); }
-  .day.is-today .day-mark { background: var(--mark-soft); }
-  .day.is-today .day-mark .when { color: var(--htu-dark); }
+  .day.is-today .day-h { background: var(--htu-soft); }
+  .day.is-today .day-h .rel { color: var(--htu-deep); }
 
-  .slot {
-    display: grid;
-    grid-template-columns: 74px 1fr auto;
-    gap: 4px 16px;
-    align-items: baseline;
-    padding: 16px 0 15px;
-    border-bottom: 1px solid var(--rule-2);
+  .ex { display: grid; grid-template-columns: 70px 1fr; gap: 2px 16px; padding: 14px 16px; border-bottom: 1px solid var(--rule-2); }
+  .ex:last-child { border-bottom: 0; }
+  .ex.gone { opacity: .5; }
+  .ex .t { font-size: 16px; font-weight: 800; }
+  .ex .t small { display: block; font-size: 12.5px; font-weight: 600; color: var(--ink-3); }
+  .ex .t .dd { display: block; font-size: 13px; font-weight: 800; color: var(--htu-deep); margin-bottom: 2px; }
+  .ex .c { font-size: 17px; font-weight: 700; }
+  .ex .m { font-size: 14px; color: var(--ink-3); }
+  .ex.has-mine { box-shadow: inset 4px 0 0 var(--htu); background: var(--htu-tint); }
+  .ex.has-mine .c { color: var(--htu-deep); }
+  .team { grid-column: 2; list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 3px; }
+  .team li { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 15px; color: var(--ink-2); padding: 2px 0; }
+  .team li.me { color: var(--ink); font-weight: 800; }
+  .team .plate { font-size: 13.5px; padding: 1px 8px; border-width: 1px; }
+  .team .none { font-size: 14px; color: var(--ink-3); font-style: italic; }
+
+  /* ---------- by course ---------- */
+  .courses { margin-top: 14px; background: var(--sheet); border: 1px solid var(--rule); }
+  .crow { appearance: none; width: 100%; text-align: left; cursor: pointer; background: none; border: 0;
+    border-bottom: 1px solid var(--rule-2); padding: 13px 16px; display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; }
+  .crow:hover { background: var(--wash); }
+  .crow .nm { font-size: 16.5px; font-weight: 700; display: block; }
+  .crow .by { font-size: 13.5px; color: var(--ink-3); display: block; }
+  .crow .sit { font-size: 13.5px; color: var(--ink-3); font-weight: 600; white-space: nowrap; }
+  .crow[aria-expanded="true"] { background: var(--htu-tint); box-shadow: inset 4px 0 0 var(--htu); }
+  .cdetail { border-bottom: 1px solid var(--rule-2); }
+  .cdetail .ex { grid-template-columns: 70px 1fr; }
+
+  .nothing { margin-top: 22px; padding: 34px 20px; text-align: center; background: var(--sheet);
+    border: 1px dashed var(--rule); color: var(--ink-3); }
+  .nothing b { display: block; color: var(--ink); font-size: 18px; margin-bottom: 4px; }
+
+  .locked { margin-top: 30px; padding: 28px 22px; background: var(--sheet); border: 1px solid var(--rule); border-top: 5px solid var(--htu); }
+  .locked b { display: block; font-size: 20px; margin-bottom: 6px; }
+  .locked p { margin: 0; color: var(--ink-2); max-width: 56ch; }
+  body.is-locked .tabs, body.is-locked .hero .pick, body.is-locked .hero .lede { display: none; }
+
+  .foot { color: var(--ink-3); font-size: 13.5px; padding: 0 0 40px; }
+  .foot a { color: var(--ink-2); }
+
+  @media (max-width: 600px) {
+    .wrap { padding: 0 16px; }
+    .bar img { height: 30px; }
+    .bar .title b { font-size: 16px; }
+    .strip .soft { display: none; }
+    .hero .wrap { padding-top: 24px; }
+    .next-main { grid-template-columns: 1fr; }
+    .hall { justify-self: start; }
+    .duty { grid-template-columns: 56px 1fr; }
+    .duty > .plate { grid-column: 2; justify-self: start; }
+    .duty .cal { grid-column: 2; }
+    .ex { grid-template-columns: 56px 1fr; padding: 13px 14px; }
+    .stats b { font-size: 24px; }
   }
-  .slot:last-child { border-bottom: 0; }
-  .slot.gone { opacity: .45; }
-
-  .slot .at { font-size: 15.5px; font-weight: 700; font-variant-numeric: tabular-nums; }
-  .slot .at small { display: block; font-size: 12.5px; font-weight: 500; color: var(--ink-3); }
-  .slot .what { min-width: 0; }
-  .slot .course { font-size: 17.5px; font-weight: 700; text-wrap: balance; }
-  .slot .lead { font-size: 14px; color: var(--ink-3); margin-top: 2px; }
-  .slot .where-all {
-    font-size: 14px; font-weight: 700; color: var(--ink-2);
-    font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap;
-  }
-
-  .team { grid-column: 2 / -1; margin-top: 10px; display: grid; gap: 2px; }
-  .who {
-    display: grid; grid-template-columns: 1fr auto;
-    gap: 14px; align-items: baseline;
-    padding: 4px 0;
-    font-size: 15px; color: var(--ink-2);
-  }
-  .who .rm {
-    font-weight: 700; font-variant-numeric: tabular-nums; color: var(--ink);
-    border: 1px solid var(--rule); padding: 0 6px; font-size: 13.5px; background: var(--sheet);
-  }
-  .who .rm.none { color: var(--ink-3); font-weight: 500; border-style: dashed; }
-  .who.hole { color: var(--pen); }
-  .who.hole .rm { color: var(--pen); border-color: var(--pen); }
-
-  /* your own duty: an HTU-red bar and a soft red ground */
-  .who.mine {
-    color: var(--ink); font-weight: 700;
-    background: var(--mark-soft);
-    box-shadow: inset 4px 0 0 var(--htu);
-    padding-left: 12px; padding-right: 8px;
-    margin-left: -12px; margin-right: -8px;
-  }
-  .who.mine .rm { color: #fff; background: var(--htu); border-color: var(--htu); }
-  .slot.has-mine .course { color: var(--htu-dark); }
-
-  .cal {
-    grid-column: 2 / -1;
-    margin-top: 10px;
-    font-size: 13.5px; font-weight: 700;
-    color: var(--htu); text-decoration: none;
-    border-bottom: 1.5px solid var(--mark-soft);
-    justify-self: start; padding-bottom: 1px;
-  }
-  .cal:hover { color: var(--htu-dark); border-bottom-color: var(--htu); }
-  .cal:focus-visible { outline: 2px solid var(--htu); outline-offset: 3px; }
-
-  /* ---------- course view ---------- */
-  .courses { display: grid; gap: 0; margin-top: 22px; background: var(--sheet); border: 1px solid var(--rule); }
-  .course-row {
-    appearance: none; text-align: left; cursor: pointer;
-    background: none; border: 0; border-bottom: 1px solid var(--rule-2);
-    font: inherit; color: var(--ink);
-    padding: 14px 16px;
-    display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: baseline;
-  }
-  .course-row:hover { background: var(--paper-2); }
-  .course-row:focus-visible { outline: 2px solid var(--htu); outline-offset: -2px; }
-  .course-row .nm { font-size: 16.5px; font-weight: 700; }
-  .course-row .by { display: block; font-size: 13.5px; color: var(--ink-3); margin-top: 1px; font-weight: 400; }
-  .course-row .sit { font-size: 13.5px; color: var(--ink-3); white-space: nowrap; }
-  .course-row[aria-expanded="true"] { background: var(--mark-soft); box-shadow: inset 4px 0 0 var(--htu); }
-  .course-detail { padding: 6px 16px 20px; border-bottom: 1px solid var(--rule-2); display: grid; gap: 16px; }
-  .sitting .head { font-size: 14.5px; font-weight: 700; font-variant-numeric: tabular-nums; margin-bottom: 6px; }
-  .sitting .head span { font-weight: 500; color: var(--ink-3); }
-
-  .nothing {
-    margin-top: 30px; padding: 38px 20px; text-align: center;
-    background: var(--sheet); border: 1px dashed var(--rule); color: var(--ink-3); font-size: 15.5px;
-  }
-  .nothing b { display: block; color: var(--ink); font-size: 17px; margin-bottom: 4px; font-weight: 700; }
-
-  /* ---------- locked: opened without the committee's link ---------- */
-  .locked { margin-top: 30px; padding: 30px 24px; background: var(--sheet); border: 1px solid var(--rule); border-top: 4px solid var(--htu); }
-  .locked b { display: block; font-size: 19px; margin-bottom: 6px; }
-  .locked p { margin: 0; color: var(--ink-2); max-width: 52ch; }
-  body.is-locked .pick, body.is-locked .views, body.is-locked .span { display: none; }
-
-  .foot { max-width: 820px; margin: 0 auto; padding: 0 22px 40px; color: var(--ink-3); font-size: 13px; }
-
-  @media (max-width: 560px) {
-    .sheet { padding: 0 16px 80px; }
-    .htu-strip > div, .htu-top > div { padding-left: 16px; padding-right: 16px; }
-    .htu-top img { height: 32px; }
-    .masthead { padding-top: 26px; }
-    .views button { padding: 10px 10px 11px; }
-    .day { padding: 0 14px; }
-    .day-mark { margin: 0 -14px; padding: 12px 14px 10px; }
-    .slot { grid-template-columns: 60px 1fr; }
-    .slot .where-all { grid-column: 2; text-align: left; margin-top: 2px; }
-    .team, .cal { grid-column: 1 / -1; }
-    .standing .drop { margin-left: 0; }
-  }
-  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
   @media print {
-    .htu-strip, .pick, .views, .tools, .cal, .standing .drop { display: none !important; }
-    .who.mine { background: none; box-shadow: none; text-decoration: underline; }
+    .strip, .tabs, .pick, .acts, .tools, .cal, .notyou, .search, .days, .chips { display: none !important; }
+    body { background: #fff; }
   }
 </style>
 
-<div class="htu-strip"><div>Exam Committee <span>School of Engineering &amp; Technology</span></div></div>
-<header class="htu-top"><div>
+<div class="strip"><div class="wrap">Exam Committee <span class="soft">School of Engineering &amp; Technology</span><span class="upd" id="updated"></span></div></div>
+<header class="bar"><div class="wrap">
   <img src="https://www.htu.edu.jo/_next/static/media/HTU%20Logo.9bbd05d3.svg" alt="HTU, Al Hussein Technical University"
        onerror="this.replaceWith(Object.assign(document.createElement('span'), {className: 'wordmark', textContent: 'HTU'}))">
   <span class="sep"></span>
-  <b>Exam Duty</b>
+  <span class="title"><b>Exam Duty</b><span id="term">Proctor schedule</span></span>
 </div></header>
 
-<div class="sheet">
-  <header class="masthead">
-    <h1>Exam duty</h1>
-    <p class="where">School of Engineering &amp; Technology, Al Hussein Technical University.</p>
-    <p class="span" id="span"></p>
+<section class="hero"><div class="wrap" id="hero">
+  <h1>Your exam duties</h1>
+  <p class="lede">Opening the schedule…</p>
+</div></section>
 
-    <div class="pick" id="pick">
-      <div class="pick-field">
-        <svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor"
-             stroke-width="1.7" aria-hidden="true"><circle cx="7" cy="7" r="4.6"/><path d="M10.4 10.4 14 14"/></svg>
-        <input id="q" type="text" autocomplete="off" role="combobox"
-               aria-expanded="false" aria-controls="opts" aria-autocomplete="list"
-               placeholder="Find your name">
-        <button type="button" class="pick-more" id="more">See everyone</button>
-      </div>
-      <div class="pick-list" id="opts" role="listbox" hidden></div>
-    </div>
+<nav class="tabs" aria-label="View"><div class="wrap" role="tablist">
+  <button role="tab" data-view="mine" aria-selected="true">My duties</button>
+  <button role="tab" data-view="all" aria-selected="false">Full schedule</button>
+  <button role="tab" data-view="course" aria-selected="false">By course</button>
+</div></nav>
 
-    <div id="standing" class="standing-wrap"></div>
-
-    <nav class="views" role="tablist" aria-label="View">
-      <button role="tab" data-view="all" aria-selected="true">Full schedule</button>
-      <button role="tab" data-view="mine" aria-selected="false">My duties</button>
-      <button role="tab" data-view="course" aria-selected="false">By course</button>
-    </nav>
-  </header>
-
-  <main id="body"></main>
-</div>
-<p class="foot">Exam Committee, School of Engineering &amp; Technology. Questions: set.exam.committee@htu.edu.jo</p>
+<main><div class="wrap" id="body"></div></main>
+<div class="wrap foot">Questions about a duty? Email the Exam Committee: <a href="mailto:set.exam.committee@htu.edu.jo">set.exam.committee@htu.edu.jo</a>. If anything changes, the committee emails you as well.</div>
 
 <script>
 (function () {
   "use strict";
 
   // The schedule arrives LOCKED (AES-256-GCM, {v, iv, ct} in base64url). The
-  // key is in the link after "#k=", which the browser never sends anywhere:
-  // the page unlocks it here, in the browser. DATA is set by boot() below.
+  // key is the part of the link after "#k=", which the browser never sends
+  // anywhere: the page unlocks the schedule here. boot() at the end.
   var SEALED = /*__DATA__*/ null;
-  var DATA = null;
-  var KEY = "";
+  var DATA = null, KEY = "";
 
   var TODAY = new Date(); TODAY.setHours(0, 0, 0, 0);
-  var MON = ["January","February","March","April","May","June",
-             "July","August","September","October","November","December"];
+  var MON = ["January","February","March","April","May","June","July","August","September","October","November","December"];
   var WD = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  var REMEMBER = "htu-exam-duty-me";
 
-  var state = {
-    view: "all", me: "", course: "",
-    q: "", day: "", scope: "upcoming", dept: ""   // full-schedule filters
-  };
+  var S = { view: "mine", me: "", q: "", day: "", scope: "upcoming", dept: "", course: "", cq: "" };
 
+  /* ---------- small helpers ---------- */
   function esc(s) {
     return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
       return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
     });
   }
-  // Returns null for anything that is not a real yyyy-mm-dd. Splitting on "-"
-  // alone is not enough: "not-a-date" also has three parts and would hand back
-  // an Invalid Date, which is truthy and slips past every later guard.
   function asDate(iso) {
-    if (!iso) return null;
-    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso));
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso || ""));
     if (!m) return null;
     var d = new Date(+m[1], +m[2] - 1, +m[3]);
     return isNaN(d.getTime()) ? null : d;
   }
-  function past(e) { var d = asDate(e.date); return d ? d < TODAY : false; }
-  function dayGap(iso) { var d = asDate(iso); return d ? Math.round((d - TODAY) / 86400000) : null; }
-  function whenWord(iso) {
-    var n = dayGap(iso);
+  function gap(iso) { var d = asDate(iso); return d ? Math.round((d - TODAY) / 86400000) : null; }
+  function past(e) { var n = gap(e.date); return n !== null && n < 0; }
+  function rel(iso) {
+    var n = gap(iso);
     if (n === null || n < 0) return "";
-    if (n === 0) return "Today";
-    if (n === 1) return "Tomorrow";
-    return n <= 13 ? "In " + n + " days" : "";
+    return n === 0 ? "Today" : n === 1 ? "Tomorrow" : n <= 13 ? "In " + n + " days" : "";
   }
-  function hoursOf(list) {
+  function longDay(iso) { var d = asDate(iso); return d ? WD[d.getDay()] + " " + d.getDate() + " " + MON[d.getMonth()] : "Date to come"; }
+  function mins(t) { var m = /^(\d{1,2}):(\d{2})$/.exec(t || ""); return m ? +m[1] * 60 + +m[2] : null; }
+  function hours(list) {
     var m = 0;
+    list.forEach(function (e) { var a = mins(e.start), b = mins(e.end); if (a !== null && b !== null && b > a) m += b - a; });
+    return Math.round(m / 30) / 2;
+  }
+  function plural(n, one, many) { return n + " " + (n === 1 ? one : (many || one + "s")); }
+  function timeOf(e) { return e.start ? e.start + (e.end ? "–" + e.end : "") : "Time to come"; }
+  function mine(who) { return DATA.exams.filter(function (e) { return e.proctors.indexOf(who) > -1; }); }
+  function hallOf(e, who) { var a = (e.assignments || []).filter(function (x) { return x.name === who; })[0]; return a && a.room ? a.room : ""; }
+  function store(v) { try { v ? localStorage.setItem(REMEMBER, v) : localStorage.removeItem(REMEMBER); } catch (err) { /* private mode */ } }
+  function stored() { try { return localStorage.getItem(REMEMBER) || ""; } catch (err) { return ""; } }
+  function known(name) { return DATA.proctorIndex.some(function (p) { return p.name === name; }); }
+
+  var ICON = {
+    search: '<svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="7" cy="7" r="4.6"/><path d="M10.4 10.4 14 14"/></svg>',
+    cal: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="2" y="3" width="12" height="11"/><path d="M2 6.5h12M5 1.5v3M11 1.5v3"/></svg>'
+  };
+
+  /* ---------- calendar ---------- */
+  // One .ics file works with Outlook, iPhone, Android and Google Calendar.
+  // Times are written as local (Jordan) time, with a reminder an hour before.
+  function icsText(s) { return String(s || "").replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,").replace(/\n/g, "\\n"); }
+  function icsWhen(date, t) { return date.replace(/-/g, "") + "T" + t.replace(":", "") + "00"; }
+  function icsFor(list, who) {
+    var stamp = new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d+Z$/, "Z");
+    var out = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//HTU SET Exam Committee//Exam Duty//EN", "CALSCALE:GREGORIAN", "METHOD:PUBLISH"];
     list.forEach(function (e) {
-      var a = /^(\d{1,2}):(\d{2})$/.exec(e.start), b = /^(\d{1,2}):(\d{2})$/.exec(e.end);
-      if (a && b) m += (+b[1] * 60 + +b[2]) - (+a[1] * 60 + +a[2]);
+      if (!asDate(e.date) || mins(e.start) === null) return;
+      var end = mins(e.end) !== null ? e.end : (function (m) { m += 120; return ("0" + Math.floor(m / 60)).slice(-2) + ":" + ("0" + m % 60).slice(-2); })(mins(e.start));
+      var hall = hallOf(e, who);
+      var others = (e.assignments || []).filter(function (a) { return a.name !== who; })
+        .map(function (a) { return a.name + (a.room ? " (" + a.room + ")" : ""); });
+      out.push("BEGIN:VEVENT",
+        "UID:" + (e.id + "-" + who).replace(/[^A-Za-z0-9-]+/g, "") + "@htu-exam-duty",
+        "DTSTAMP:" + stamp,
+        "DTSTART:" + icsWhen(e.date, e.start),
+        "DTEND:" + icsWhen(e.date, end),
+        "SUMMARY:" + icsText("Proctoring: " + e.course),
+        "LOCATION:" + icsText(hall ? "Hall " + hall : "Hall to be confirmed"),
+        "DESCRIPTION:" + icsText((hall ? "Your hall: " + hall + "\n" : "") +
+          (e.coordinator ? "Coordinator: " + e.coordinator + "\n" : "") +
+          (e.students != null ? e.students + " students\n" : "") +
+          (others.length ? "With: " + others.join(", ") : "")),
+        "BEGIN:VALARM", "ACTION:DISPLAY", "DESCRIPTION:" + icsText("Proctoring: " + e.course), "TRIGGER:-PT60M", "END:VALARM",
+        "END:VEVENT");
     });
-    return m > 0 ? Math.round(m / 30) / 2 : 0;
+    out.push("END:VCALENDAR");
+    // Lines longer than 75 characters are folded, as calendar apps expect.
+    return out.map(function (l) {
+      var parts = [];
+      while (l.length > 74) { parts.push(l.slice(0, 74)); l = " " + l.slice(74); }
+      parts.push(l);
+      return parts.join("\r\n");
+    }).join("\r\n") + "\r\n";
   }
-  function myRoom(e, who) {
-    var a = (e.assignments || []).filter(function (x) { return x.name === who; })[0];
-    return a && a.room ? a.room : "";
-  }
-  function duties(who) {
-    return DATA.exams.filter(function (e) { return e.proctors.indexOf(who) > -1; });
+  function download(list, who, name) {
+    var blob = new Blob([icsFor(list, who)], { type: "text/calendar;charset=utf-8" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    document.body.appendChild(a); a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
   }
   function gcal(e, who) {
-    var d = String(e.date || "").replace(/-/g, "");
-    var s = String(e.start || "").replace(":", "") + "00";
-    var f = String(e.end || "").replace(":", "") + "00";
-    if (d.length !== 8 || s.length !== 6 || f.length !== 6) return null;
-    var rm = myRoom(e, who);
-    return "https://calendar.google.com/calendar/render?" + [
-      "action=TEMPLATE",
-      "text=" + encodeURIComponent("Proctoring — " + e.course),
-      "dates=" + d + "T" + s + "/" + d + "T" + f,
-      "ctz=Asia/Amman",
-      "location=" + encodeURIComponent(rm || e.room || "TBC"),
-      "details=" + encodeURIComponent(
-        (rm ? "Your room: " + rm + ". " : "") +
-        (e.students != null ? e.students + " students. " : "") +
-        "Coordinator: " + (e.coordinator || "not listed") + ".")
-    ].join("&");
+    if (!asDate(e.date) || mins(e.start) === null || mins(e.end) === null) return "";
+    var hall = hallOf(e, who);
+    return "https://calendar.google.com/calendar/render?action=TEMPLATE" +
+      "&text=" + encodeURIComponent("Proctoring: " + e.course) +
+      "&dates=" + icsWhen(e.date, e.start) + "/" + icsWhen(e.date, e.end) + "&ctz=Asia/Amman" +
+      "&location=" + encodeURIComponent(hall ? "Hall " + hall : "Hall to be confirmed") +
+      "&details=" + encodeURIComponent((hall ? "Your hall: " + hall + ". " : "") + (e.coordinator ? "Coordinator: " + e.coordinator + "." : ""));
   }
 
-  /* ---------- picker ---------- */
-  var input = document.getElementById("q");
-  var opts = document.getElementById("opts");
-
-  function paintOpts(q) {
-    q = (q || "").toLowerCase().trim();
-    var list = DATA.proctorIndex.filter(function (p) {
-      return !q || p.name.toLowerCase().indexOf(q) > -1;
-    });
-    opts.innerHTML = list.length
-      ? list.map(function (p, i) {
-          return '<div role="option" aria-selected="false" class="' + (i === 0 ? "on" : "") +
-            '" data-name="' + esc(p.name) + '">' + esc(p.name) +
-            '<span class="tally">' + (p.count ? p.count + (p.count === 1 ? " duty" : " duties")
-                                              : "none this period") + "</span></div>";
-        }).join("")
-      : '<div class="empty">No one by that name.</div>';
+  /* ---------- hero ---------- */
+  function heroPick() {
+    var n = DATA.exams.length;
+    return '<h1>Your exam duties</h1>' +
+      '<p class="lede">Find your name to see when and where you proctor' + (n ? ", " + spanText() : "") +
+      '. This phone remembers you for next time.</p>' +
+      '<div class="pick" id="pick"><div class="pick-field">' + ICON.search +
+      '<input id="q" type="text" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="opts" aria-autocomplete="list" placeholder="Type your name">' +
+      '<button type="button" class="pick-all" id="all">See everyone</button></div>' +
+      '<div class="pick-list" id="opts" role="listbox" hidden></div></div>';
   }
-  function openOpts(q) { paintOpts(q); opts.hidden = false; input.setAttribute("aria-expanded", "true"); }
-  function shutOpts() { opts.hidden = true; input.setAttribute("aria-expanded", "false"); }
-
-  input.addEventListener("input", function () { openOpts(input.value); });
-  input.addEventListener("focus", function () { if (input.value) openOpts(input.value); });
-  document.getElementById("more").addEventListener("click", function () {
-    if (opts.hidden) { openOpts(input.value); input.focus(); } else { shutOpts(); }
-  });
-  opts.addEventListener("click", function (ev) {
-    var row = ev.target.closest("[data-name]");
-    if (row) choose(row.dataset.name);
-  });
-  input.addEventListener("keydown", function (ev) {
-    if (ev.key === "Escape") { shutOpts(); return; }
-    var rows = Array.prototype.slice.call(opts.querySelectorAll("[data-name]"));
-    if (ev.key === "ArrowDown" || ev.key === "ArrowUp") {
-      ev.preventDefault();
-      if (opts.hidden) { openOpts(input.value); return; }
-      if (!rows.length) return;
-      var i = rows.findIndex(function (r) { return r.classList.contains("on"); });
-      rows.forEach(function (r) { r.classList.remove("on"); });
-      i = ev.key === "ArrowDown" ? (i + 1) % rows.length : (i - 1 + rows.length) % rows.length;
-      rows[i].classList.add("on");
-      rows[i].scrollIntoView({ block: "nearest" });
-    } else if (ev.key === "Enter") {
-      ev.preventDefault();
-      var on = !opts.hidden && opts.querySelector(".on");
-      if (on) choose(on.dataset.name);
-    }
-  });
-  document.addEventListener("click", function (ev) {
-    if (!ev.target.closest("#pick")) shutOpts();
-  });
-
-  function choose(name) {
-    state.me = name;
-    state.view = "mine";
-    input.value = "";
-    shutOpts();
-    render();
+  function heroMe() {
+    var all = mine(S.me), ahead = all.filter(function (e) { return !past(e); });
+    var done = all.length - ahead.length;
+    var first = S.me.split(" ")[0];
+    var h = '<div class="me-head"><span class="hi">Exam duty for</span><h1>' + esc(S.me) + '</h1>' +
+      '<button class="notyou" id="notyou">Not ' + esc(first) + '? Choose another name</button></div>' +
+      '<div class="stats num"><div><b>' + ahead.length + '</b><span>' + (ahead.length === 1 ? "duty" : "duties") + ' to come</span></div>' +
+      '<div><b>' + hours(ahead) + '</b><span>hours to come</span></div>' +
+      '<div><b>' + done + '</b><span>done</span></div></div>';
+    var next = ahead[0];
+    if (next) h += nextHtml(next);
+    else if (!all.length) h += '<div class="nothing" style="margin-top:20px"><b>No duties for you this semester</b>If that changes, it appears here and the committee emails you.</div>';
+    else h += '<div class="nothing" style="margin-top:20px"><b>All your duties are done</b>Thank you.</div>';
+    return h;
   }
-
-  /* ---------- pieces ---------- */
-  function slotHtml(e, opt) {
-    opt = opt || {};
-    var mineHere = state.me && e.proctors.indexOf(state.me) > -1;
-    var out = ['<div class="slot' + (past(e) ? " gone" : "") + (mineHere ? " has-mine" : "") + '">'];
-
-    out.push('<div class="at">' + esc(e.start || "—") +
-             (e.end ? "<small>to " + esc(e.end) + "</small>" : "") + "</div>");
-
-    out.push('<div class="what"><div class="course">' + esc(e.course) + "</div>");
-    var lead = [];
-    if (e.coordinator) lead.push(esc(e.coordinator));
-    if (e.students != null) lead.push(e.students + " students");
-    if (lead.length) out.push('<div class="lead">' + lead.join(" &middot; ") + "</div>");
-    out.push("</div>");
-
-    var rooms = e.rooms && e.rooms.length ? e.rooms : [];
-    // In My duties the only room that matters is yours, so name it here.
-    if (opt.onlyMyRoom) {
-      var mine = myRoom(e, state.me);
-      out.push('<div class="where-all">' + (mine ? esc(mine) : "room to come") + "</div>");
-    } else {
-      out.push('<div class="where-all">' + (rooms.length > 1 ? rooms.length + " rooms" : "") + "</div>");
-    }
-
-    if (!opt.onlyMyRoom) {
-      var team = (e.assignments || []).map(function (a) {
-        var isMe = state.me && a.name === state.me;
-        return '<div class="who' + (isMe ? " mine" : "") + '"><span>' + esc(a.name) + "</span>" +
-               '<span class="rm' + (a.room ? "" : " none") + '">' +
-               (a.room ? esc(a.room) : "room to come") + "</span></div>";
-      });
-      (e.spareRooms || []).forEach(function (rm) {
-        team.push('<div class="who hole"><span>Nobody assigned</span>' +
-                  '<span class="rm">' + esc(rm) + "</span></div>");
-      });
-      var ghosts = (e.shortfall || 0) - (e.spareRooms || []).length;
-      for (var i = 0; i < ghosts; i++) {
-        team.push('<div class="who hole"><span>Nobody assigned</span>' +
-                  '<span class="rm">room to come</span></div>');
-      }
-      if (team.length) out.push('<div class="team">' + team.join("") + "</div>");
-    }
-
-    if (mineHere && !past(e)) {
-      var u = gcal(e, state.me);
-      if (u) out.push('<a class="cal" href="' + u + '" target="_blank" rel="noopener">Add to your calendar</a>');
-    }
-
-    out.push("</div>");
-    return out.join("");
-  }
-
-  function rosterHtml(rows, opt) {
-    var out = [], cur = null;
-    rows.forEach(function (e) {
-      if (e.date !== cur) {
-        if (cur !== null) out.push("</div>");
-        cur = e.date;
-        var d = asDate(e.date), w = whenWord(e.date);
-        out.push('<div class="day' + (dayGap(e.date) === 0 ? " is-today" : "") + '">' +
-          '<div class="day-mark">' +
-            '<span class="num">' + (d ? d.getDate() : "—") + "</span>" +
-            '<span class="mon">' + (d ? MON[d.getMonth()] : "Date not set") + "</span>" +
-            '<span class="wd">' + (d ? WD[d.getDay()] : "") + "</span>" +
-            (w ? '<span class="when">' + w + "</span>" : "") +
-          "</div>");
-      }
-      out.push(slotHtml(e, opt));
-    });
-    out.push("</div>");
-    return out.join("");
+  function nextHtml(e) {
+    var hall = hallOf(e, S.me), r = rel(e.date);
+    var others = (e.assignments || []).filter(function (a) { return a.name !== S.me; });
+    var meta = [];
+    if (e.coordinator) meta.push("Coordinator: " + esc(e.coordinator));
+    if (e.students != null) meta.push(e.students + " students");
+    var g = gcal(e, S.me);
+    return '<article class="next" aria-label="Your next duty">' +
+      '<div class="next-top"><span class="lbl">Your next duty</span>' + (r ? '<span class="badge' + (gap(e.date) > 1 ? " calm" : "") + '">' + r + '</span>' : "") + '</div>' +
+      '<div class="next-main"><div>' +
+        '<div class="next-when">' + esc(longDay(e.date)) + '<small class="num">' + esc(timeOf(e)) + '</small></div>' +
+        '<div class="next-course">' + esc(e.course) + '</div>' +
+        (meta.length ? '<div class="next-meta">' + meta.join(" &middot; ") + '</div>' : "") +
+      '</div>' +
+      '<div class="hall' + (hall ? "" : " tbc") + '"><span>Your hall</span><b>' + (hall ? esc(hall) : "To be confirmed") + '</b></div></div>' +
+      (others.length ? '<div class="with"><b>Proctoring with you</b><ul>' + others.map(function (a) {
+        return '<li><span>' + esc(a.name) + '</span>' + (a.room ? '<span class="plate">' + esc(a.room) + '</span>' : '<span class="plate tbc">hall to come</span>') + '</li>';
+      }).join("") + '</ul></div>' : "") +
+      '<div class="acts"><button class="btn solid" data-ics="' + esc(e.id) + '">' + ICON.cal + 'Add to calendar</button>' +
+      (g ? '<a class="btn" href="' + g + '" target="_blank" rel="noopener">Google Calendar</a>' : "") + '</div>' +
+      '</article>';
   }
 
   /* ---------- views ---------- */
-  // Every date that has an exam, for the strip along the top.
-  // (Worked out in boot(), once the schedule is unlocked.)
-  var DATES = [];
-  function findDates() {
-    var seen = {}, out = [];
-    DATA.exams.forEach(function (e) {
-      if (e.date && asDate(e.date) && !seen[e.date]) { seen[e.date] = 1; out.push(e.date); }
-    });
-    return out.sort();
-  }
-
-  function stripHtml() {
-    return '<div class="strip">' + DATES.map(function (iso) {
-      var on = DATA.exams.filter(function (e) { return e.date === iso; });
-      var d = asDate(iso);
-      var cls = ["dtile"];
-      if (dayGap(iso) === 0) cls.push("today");
-      if (asDate(iso) < TODAY) cls.push("gone");
-      var dots = on.slice(0, 7).map(function (e) {
-        return '<i class="' + (e.shortfall ? "short" : "") + '"></i>';
-      }).join("");
-      return '<button class="' + cls.join(" ") + '" data-day="' + iso +
-        '" aria-pressed="' + (state.day === iso) + '" title="' + on.length +
-        (on.length === 1 ? " exam" : " exams") + '">' +
-        '<span class="wd">' + WD[d.getDay()].slice(0, 3) + "</span>" +
-        '<span class="dn">' + d.getDate() + "</span>" +
-        '<span class="mo">' + MON[d.getMonth()].slice(0, 3) + "</span>" +
-        '<span class="dots">' + dots + "</span></button>";
-    }).join("") + "</div>";
-  }
-
-  function viewAll() {
-    var q = state.q.toLowerCase().trim();
-
-    var depts = [];
-    DATA.exams.forEach(function (e) { if (e.dept && depts.indexOf(e.dept) < 0) depts.push(e.dept); });
-    depts.sort();
-
-    var rows = DATA.exams.filter(function (e) {
-      if (state.day && e.date !== state.day) return false;
-      if (state.dept && e.dept !== state.dept) return false;
-      if (!state.day) {
-        if (state.scope === "upcoming" && past(e)) return false;
-        if (state.scope === "done" && !past(e)) return false;
-      }
-      if (!q) return true;
-      return (e.course + " " + e.coordinator + " " + e.room + " " + e.dept + " " +
-              e.proctors.join(" ")).toLowerCase().indexOf(q) > -1;
-    });
-
-    var out = [];
-    out.push('<div class="searchbar">' +
-      '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" ' +
-      'stroke-width="1.7" aria-hidden="true"><circle cx="7" cy="7" r="4.6"/><path d="M10.4 10.4 14 14"/></svg>' +
-      '<input id="find" type="text" autocomplete="off" placeholder="Search a course, room, ' +
-      'coordinator or proctor" value="' + esc(state.q) + '">' +
-      (state.q ? '<button class="clear" id="clearq">Clear</button>' : "") + "</div>");
-
-    out.push(stripHtml());
-
-    out.push('<div class="filters">');
-    [["upcoming", "Still to come"], ["all", "Everything"], ["done", "Finished"]].forEach(function (s) {
-      out.push('<button data-scope="' + s[0] + '" aria-pressed="' +
-               (!state.day && state.scope === s[0]) + '">' + s[1] + "</button>");
-    });
-    if (depts.length) {
-      out.push('<span class="sep"></span>');
-      out.push('<button data-dept="" aria-pressed="' + (!state.dept) + '">All departments</button>');
-      depts.forEach(function (d) {
-        out.push('<button data-dept="' + esc(d) + '" aria-pressed="' +
-                 (state.dept === d) + '">' + esc(d) + "</button>");
-      });
+  function viewMine() {
+    if (!S.me) {
+      return '<div class="nothing"><b>Find your name above</b>Your duties appear here: the day, the time and your hall.</div>';
     }
-    if (state.day) {
-      out.push('<span class="sep"></span><button data-day="">Show every day</button>');
+    var all = mine(S.me);
+    if (!all.length) return "";
+    var ahead = all.filter(function (e) { return !past(e); }), gone = all.filter(past);
+    var out = ['<div class="section-h"><h2>All your duties</h2><span class="aside num">' + plural(all.length, "duty", "duties") + ', ' + hours(all) + ' hours</span></div>'];
+    if (ahead.length) {
+      out.push('<div class="tools"><button class="btn solid" id="ics-all">' + ICON.cal + 'Add all ' + (ahead.length > 1 ? ahead.length + " " : "") + 'to my calendar</button>' +
+               '<button class="btn" id="copy">Copy the list</button><button class="btn" id="print">Print</button></div>');
     }
-    out.push("</div>");
-
-    out.push('<p class="count">' + rows.length + (rows.length === 1 ? " exam" : " exams") +
-      (state.day ? " on " + esc(prettyDay(state.day)) : "") + "</p>");
-
-    out.push(rows.length ? rosterHtml(rows)
-      : '<div class="nothing"><b>Nothing matches</b>Try a different search, or clear the filters.</div>');
-
+    out.push('<div class="duties">');
+    ahead.concat(gone).forEach(function (e) {
+      var d = asDate(e.date), hall = hallOf(e, S.me), n = gap(e.date);
+      var with_ = (e.assignments || []).filter(function (a) { return a.name !== S.me; }).length;
+      out.push('<div class="duty' + (past(e) ? " gone" : "") + (n !== null && n >= 0 && n <= 1 ? " soon" : "") + '">' +
+        '<div class="dbox num"><span class="wd">' + (d ? WD[d.getDay()].slice(0, 3) : "") + '</span><span class="dn">' + (d ? d.getDate() : "–") +
+        '</span><span class="mo">' + (d ? MON[d.getMonth()].slice(0, 3) : "") + '</span></div>' +
+        '<div><div class="c">' + esc(e.course) + '</div><div class="m num"><b>' + esc(timeOf(e)) + '</b>' +
+          (rel(e.date) ? " &middot; " + rel(e.date) : past(e) ? " &middot; done" : "") +
+          (with_ ? " &middot; with " + plural(with_, "other") : "") + '</div></div>' +
+        (hall ? '<span class="plate mine">' + esc(hall) + '</span>' : '<span class="plate tbc">hall to come</span>') +
+        (!past(e) ? '<div class="cal"><button class="link" data-ics="' + esc(e.id) + '">Add to calendar</button></div>' : "") +
+        '</div>');
+    });
+    out.push('</div>');
     return out.join("");
   }
 
-  function prettyDay(iso) {
-    var d = asDate(iso);
-    return d ? WD[d.getDay()] + " " + d.getDate() + " " + MON[d.getMonth()] : iso;
+  function examHtml(e, withDate) {
+    var isMine = S.me && e.proctors.indexOf(S.me) > -1;
+    var d = asDate(e.date);
+    var meta = [];
+    if (e.coordinator) meta.push(esc(e.coordinator));
+    if (e.students != null) meta.push(e.students + " students");
+    if (e.dept) meta.push(esc(e.dept));
+    var team = (e.assignments || []).map(function (a) {
+      var me = S.me && a.name === S.me;
+      return '<li class="' + (me ? "me" : "") + '"><span>' + esc(a.name) + (me ? " (you)" : "") + '</span>' +
+        (a.room ? '<span class="plate' + (me ? " mine" : "") + '">' + esc(a.room) + '</span>' : '<span class="plate tbc">hall to come</span>') + '</li>';
+    });
+    return '<div class="ex' + (past(e) ? " gone" : "") + (isMine ? " has-mine" : "") + '">' +
+      '<div class="t num">' + (withDate && d ? '<span class="dd">' + WD[d.getDay()].slice(0, 3) + " " + d.getDate() + " " + MON[d.getMonth()].slice(0, 3) + '</span>' : "") +
+        esc(e.start || "–") + (e.end ? "<small>to " + esc(e.end) + "</small>" : "") + '</div>' +
+      '<div><div class="c">' + esc(e.course) + '</div>' + (meta.length ? '<div class="m">' + meta.join(" &middot; ") + '</div>' : "") + '</div>' +
+      '<ul class="team">' + (team.join("") || '<li><span class="none">Proctors to be confirmed</span></li>') + '</ul></div>';
+  }
+  function byDay(rows) {
+    var out = [], cur = null;
+    rows.forEach(function (e) {
+      if (e.date !== cur) {
+        if (cur !== null) out.push("</section>");
+        cur = e.date;
+        var d = asDate(e.date), r = rel(e.date);
+        out.push('<section class="day' + (gap(e.date) === 0 ? " is-today" : "") + '"><div class="day-h">' +
+          '<span class="dn num">' + (d ? d.getDate() : "–") + '</span><span class="mo">' + (d ? MON[d.getMonth()] : "Date to come") + '</span>' +
+          '<span class="wd">' + (d ? WD[d.getDay()] : "") + '</span>' + (r ? '<span class="rel">' + r + '</span>' : "") + '</div>');
+      }
+      out.push(examHtml(e));
+    });
+    if (cur !== null) out.push("</section>");
+    return out.join("");
   }
 
-  function viewMine() {
-    if (!state.me) {
-      return '<div class="nothing"><b>Nobody chosen yet</b>' +
-             "Find your name above and this becomes your own list of duties.</div>";
+  function viewAll() {
+    var q = S.q.toLowerCase().trim();
+    var dates = [], depts = [];
+    DATA.exams.forEach(function (e) {
+      if (asDate(e.date) && dates.indexOf(e.date) < 0) dates.push(e.date);
+      if (e.dept && depts.indexOf(e.dept) < 0) depts.push(e.dept);
+    });
+    dates.sort(); depts.sort();
+    var rows = DATA.exams.filter(function (e) {
+      if (S.day && e.date !== S.day) return false;
+      if (S.dept && e.dept !== S.dept) return false;
+      if (!S.day && S.scope === "upcoming" && past(e)) return false;
+      if (!S.day && S.scope === "done" && !past(e)) return false;
+      if (!q) return true;
+      return (e.course + " " + e.coordinator + " " + (e.rooms || []).join(" ") + " " + e.dept + " " + e.proctors.join(" ")).toLowerCase().indexOf(q) > -1;
+    });
+    var out = ['<div class="search">' + ICON.search +
+      '<input id="find" type="search" autocomplete="off" placeholder="Search a course, hall or name" value="' + esc(S.q) + '">' +
+      (S.q ? '<button class="link" id="clearq">Clear</button>' : "") + '</div>'];
+    out.push('<div class="days" role="group" aria-label="Exam days">' + dates.map(function (iso) {
+      var d = asDate(iso), on = DATA.exams.filter(function (e) { return e.date === iso; });
+      var meHere = S.me && on.some(function (e) { return e.proctors.indexOf(S.me) > -1; });
+      var cls = "dt" + (gap(iso) === 0 ? " today" : "") + (gap(iso) < 0 ? " gone" : "") + (meHere ? " has-mine" : "");
+      return '<button class="' + cls + '" data-day="' + iso + '" aria-pressed="' + (S.day === iso) + '" title="' + esc(longDay(iso)) + ": " + plural(on.length, "exam") + (meHere ? ", you proctor" : "") + '">' +
+        '<span class="wd">' + WD[d.getDay()].slice(0, 3) + '</span><span class="dn num">' + d.getDate() + '</span>' +
+        '<span class="k">' + (meHere ? "you" : plural(on.length, "exam")) + '</span></button>';
+    }).join("") + '</div>');
+    out.push('<div class="chips">');
+    if (S.day) out.push('<button class="chip" data-day="" aria-pressed="true">' + esc(longDay(S.day)) + ' &times;</button>');
+    else [["upcoming", "Coming up"], ["all", "Whole semester"], ["done", "Finished"]].forEach(function (s) {
+      out.push('<button class="chip" data-scope="' + s[0] + '" aria-pressed="' + (S.scope === s[0]) + '">' + s[1] + '</button>');
+    });
+    if (depts.length > 1) {
+      out.push('<span class="gap"></span><button class="chip" data-dept="" aria-pressed="' + (!S.dept) + '">All departments</button>');
+      depts.forEach(function (d) { out.push('<button class="chip" data-dept="' + esc(d) + '" aria-pressed="' + (S.dept === d) + '">' + esc(d.replace(/ Department$/, "")) + '</button>'); });
     }
-    var mine = duties(state.me);
-    if (!mine.length) {
-      return '<div class="nothing"><b>Nothing for you this period</b>' +
-             esc(state.me) + " has no proctoring duties between now and the end of the exams.</div>";
-    }
-    return '<div class="tools"><button class="tool" id="copy">Copy your duties</button></div>' +
-           rosterHtml(mine, { onlyMyRoom: true });
+    out.push('</div>');
+    out.push('<p class="count num">' + plural(rows.length, "exam") + '</p>');
+    out.push(rows.length ? byDay(rows) : '<div class="nothing"><b>Nothing matches</b>Try another search, or clear the filters.</div>');
+    return out.join("");
   }
 
   function viewCourse() {
-    var out = ['<div class="courses">'];
-    DATA.courseIndex.forEach(function (c) {
-      var open = state.course === c.course;
-      out.push('<button class="course-row" data-course="' + esc(c.course) + '" aria-expanded="' + open + '">' +
-        '<span><span class="nm">' + esc(c.course) + "</span>" +
-        (c.coordinator ? '<span class="by">' + esc(c.coordinator) + "</span>" : "") + "</span>" +
-        '<span class="sit">' + c.sittings.length +
-        (c.sittings.length === 1 ? " sitting" : " sittings") + "</span></button>");
-
+    var q = S.cq.toLowerCase().trim();
+    var list = DATA.courseIndex.filter(function (c) { return !q || (c.course + " " + c.coordinator).toLowerCase().indexOf(q) > -1; });
+    var out = ['<div class="search">' + ICON.search +
+      '<input id="cfind" type="search" autocomplete="off" placeholder="Find a course" value="' + esc(S.cq) + '"></div>'];
+    out.push('<p class="count num">' + plural(list.length, "course") + '</p><div class="courses">');
+    list.forEach(function (c) {
+      var open = S.course === c.course;
+      var meHere = S.me && DATA.exams.some(function (e) { return e.course === c.course && e.proctors.indexOf(S.me) > -1; });
+      out.push('<button class="crow" data-course="' + esc(c.course) + '" aria-expanded="' + open + '">' +
+        '<span><span class="nm">' + esc(c.course) + (meHere ? ' <span class="badge" style="font-size:11px;vertical-align:2px">you</span>' : "") + '</span>' +
+        (c.coordinator ? '<span class="by">' + esc(c.coordinator) + '</span>' : "") + '</span>' +
+        '<span class="sit">' + plural(c.sittings.length, "sitting") + '</span></button>');
       if (open) {
-        out.push('<div class="course-detail">');
-        DATA.exams.filter(function (e) { return e.course === c.course; }).forEach(function (e) {
-          var d = asDate(e.date);
-          out.push('<div class="sitting"><div class="head">' +
-            (d ? WD[d.getDay()] + " " + d.getDate() + " " + MON[d.getMonth()] : "date to come") +
-            " <span>" + esc(e.time) + "</span></div>");
-          var team = (e.assignments || []).map(function (a) {
-            var isMe = state.me && a.name === state.me;
-            return '<div class="who' + (isMe ? " mine" : "") + '"><span>' + esc(a.name) + "</span>" +
-                   '<span class="rm' + (a.room ? "" : " none") + '">' +
-                   (a.room ? esc(a.room) : "room to come") + "</span></div>";
-          });
-          (e.spareRooms || []).forEach(function (rm) {
-            team.push('<div class="who hole"><span>Nobody assigned</span>' +
-                      '<span class="rm">' + esc(rm) + "</span></div>");
-          });
-          out.push(team.join("") ||
-            '<div class="who hole"><span>No proctors yet</span><span class="rm"></span></div>');
-          out.push("</div>");
-        });
-        out.push("</div>");
+        out.push('<div class="cdetail">' + DATA.exams.filter(function (e) { return e.course === c.course; }).map(function (e) {
+          return examHtml(e, true);
+        }).join("") + '</div>');
       }
     });
-    out.push("</div>");
+    out.push('</div>');
+    if (!list.length) out.push('<div class="nothing"><b>No course by that name</b></div>');
     return out.join("");
   }
 
   /* ---------- render ---------- */
-  function renderStanding() {
-    var box = document.getElementById("standing");
-    if (!state.me) { box.innerHTML = ""; return; }
-
-    var mine = duties(state.me);
-    var ahead = mine.filter(function (e) { return !past(e); });
-    var next = ahead[0];
-    var bits = ['<div class="standing"><span class="name">' + esc(state.me) + "</span>"];
-
-    if (mine.length) {
-      var f = "<b>" + ahead.length + "</b> " + (ahead.length === 1 ? "duty" : "duties") + " left";
-      f += " &middot; <b>" + hoursOf(ahead) + "</b> hours";
-      if (next) {
-        var rm = myRoom(next, state.me);
-        f += " &middot; next " + esc(next.day) + " " + esc(next.start) +
-             (rm ? ' in <b style="white-space:nowrap">' + esc(rm) + "</b>" : "");
-      }
-      bits.push('<span class="facts">' + f + "</span>");
-    } else {
-      bits.push('<span class="facts">No duties in this exam period.</span>');
-    }
-    bits.push('<button class="drop" id="drop">Not you?</button></div>');
-    box.innerHTML = bits.join("");
+  function spanText() {
+    var ds = DATA.exams.map(function (e) { return e.date; }).filter(asDate).sort();
+    if (!ds.length) return "";
+    var a = asDate(ds[0]), b = asDate(ds[ds.length - 1]);
+    return a.getDate() + " " + MON[a.getMonth()] + " to " + b.getDate() + " " + MON[b.getMonth()] + " " + b.getFullYear();
   }
-
+  function renderHero() {
+    document.getElementById("hero").innerHTML = S.me ? heroMe() : heroPick();
+    if (!S.me) wirePicker();
+  }
   function render() {
-    Array.prototype.forEach.call(document.querySelectorAll(".views button"), function (b) {
-      b.setAttribute("aria-selected", String(b.dataset.view === state.view));
+    Array.prototype.forEach.call(document.querySelectorAll(".tabs [data-view]"), function (b) {
+      b.setAttribute("aria-selected", String(b.dataset.view === S.view));
     });
-    renderStanding();
-    document.getElementById("body").innerHTML =
-      state.view === "mine" ? viewMine() :
-      state.view === "course" ? viewCourse() : viewAll();
+    document.getElementById("body").innerHTML = S.view === "all" ? viewAll() : S.view === "course" ? viewCourse() : viewMine();
     writeHash();
+  }
+  function renderAll() { renderHero(); render(); }
+
+  /* ---------- the name picker ---------- */
+  function wirePicker() {
+    var input = document.getElementById("q"), opts = document.getElementById("opts");
+    function paint(q) {
+      q = (q || "").toLowerCase().trim();
+      var words = q.split(/\s+/).filter(Boolean);
+      var list = DATA.proctorIndex.filter(function (p) {
+        var n = p.name.toLowerCase();
+        return words.every(function (w) { return n.indexOf(w) > -1; });
+      });
+      opts.innerHTML = list.length ? list.map(function (p, i) {
+        return '<div role="option" aria-selected="' + (i === 0) + '" class="' + (i === 0 ? "on" : "") + '" data-name="' + esc(p.name) + '">' + esc(p.name) +
+          '<span class="tally">' + (p.count ? plural(p.count, "duty", "duties") : "no duties") + '</span></div>';
+      }).join("") : '<div class="empty">No one by that name. Check the spelling, or press See everyone.</div>';
+    }
+    function open(q) { paint(q); opts.hidden = false; input.setAttribute("aria-expanded", "true"); }
+    function shut() { opts.hidden = true; input.setAttribute("aria-expanded", "false"); }
+    input.addEventListener("input", function () { open(input.value); });
+    input.addEventListener("focus", function () { if (input.value) open(input.value); });
+    document.getElementById("all").addEventListener("click", function () { if (opts.hidden) { open(input.value); input.focus(); } else shut(); });
+    opts.addEventListener("click", function (ev) { var r = ev.target.closest("[data-name]"); if (r) choose(r.dataset.name); });
+    input.addEventListener("keydown", function (ev) {
+      if (ev.key === "Escape") { shut(); return; }
+      var rows = Array.prototype.slice.call(opts.querySelectorAll("[data-name]"));
+      if (ev.key === "ArrowDown" || ev.key === "ArrowUp") {
+        ev.preventDefault();
+        if (opts.hidden) { open(input.value); return; }
+        if (!rows.length) return;
+        var i = rows.findIndex(function (r) { return r.classList.contains("on"); });
+        rows.forEach(function (r) { r.classList.remove("on"); r.setAttribute("aria-selected", "false"); });
+        i = ev.key === "ArrowDown" ? (i + 1) % rows.length : (i - 1 + rows.length) % rows.length;
+        rows[i].classList.add("on"); rows[i].setAttribute("aria-selected", "true");
+        rows[i].scrollIntoView({ block: "nearest" });
+      } else if (ev.key === "Enter") {
+        ev.preventDefault();
+        var on = !opts.hidden && opts.querySelector(".on");
+        if (on) choose(on.dataset.name);
+      }
+    });
+  }
+  document.addEventListener("click", function (ev) {
+    var opts = document.getElementById("opts");
+    if (opts && !ev.target.closest("#pick")) { opts.hidden = true; }
+  });
+  function choose(name) {
+    S.me = name; S.view = "mine"; store(name);
+    renderAll();
+    window.scrollTo(0, 0);
   }
 
   /* ---------- events ---------- */
-  document.querySelector(".views").addEventListener("click", function (ev) {
-    var b = ev.target.closest("button[data-view]");
-    if (!b || b.dataset.view === state.view) return;
-    state.view = b.dataset.view;
-    render();
+  document.querySelector(".tabs").addEventListener("click", function (ev) {
+    var b = ev.target.closest("[data-view]");
+    if (!b || b.dataset.view === S.view) return;
+    S.view = b.dataset.view; render();
   });
-
-  // Typing re-renders the list, so put the caret back where it was.
   document.getElementById("body").addEventListener("input", function (ev) {
-    if (ev.target.id !== "find") return;
+    var id = ev.target.id;
+    if (id !== "find" && id !== "cfind") return;
     var caret = ev.target.selectionStart;
-    state.q = ev.target.value;
+    if (id === "find") S.q = ev.target.value; else S.cq = ev.target.value;
     render();
-    var again = document.getElementById("find");
-    if (again) { again.focus(); again.setSelectionRange(caret, caret); }
+    var again = document.getElementById(id);
+    if (again) { again.focus(); try { again.setSelectionRange(caret, caret); } catch (err) { /* type=search */ } }
   });
-
-  document.getElementById("body").addEventListener("click", function (ev) {
+  document.addEventListener("click", function (ev) {
     var b = ev.target.closest("button");
-    if (!b) return;
-    if (b.dataset.day !== undefined) {
-      state.day = b.dataset.day === state.day ? "" : b.dataset.day;
-      render();
-    } else if (b.dataset.scope !== undefined) {
-      state.scope = b.dataset.scope; state.day = ""; render();
-    } else if (b.dataset.dept !== undefined) {
-      state.dept = b.dataset.dept; render();
-    } else if (b.id === "clearq") {
-      state.q = ""; render();
-      var f = document.getElementById("find"); if (f) f.focus();
-    } else if (b.dataset.course !== undefined) {
-      state.course = state.course === b.dataset.course ? "" : b.dataset.course;
-      render();
-    } else if (b.id === "copy") {
-      var mine = duties(state.me);
-      var txt = "Exam duty — " + state.me + "\n\n" + mine.map(function (e) {
-        var d = asDate(e.date), rm = myRoom(e, state.me);
-        return (d ? d.getDate() + " " + MON[d.getMonth()] : "?") + ", " + e.day +
-               "  " + e.time + "  " + e.course + "  " + (rm ? "room " + rm : "room to come");
-      }).join("\n");
-      var done = function (m) { b.textContent = m; setTimeout(function () { b.textContent = "Copy your duties"; }, 1700); };
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(txt).then(function () { done("Copied"); },
-                                                function () { done("Could not copy"); });
-      } else { done("Not supported here"); }
+    if (!b || !DATA) return;
+    if (b.id === "notyou") { S.me = ""; store(""); S.view = "mine"; renderAll(); var q = document.getElementById("q"); if (q) q.focus(); return; }
+    if (b.dataset.ics !== undefined) {
+      var e = DATA.exams.filter(function (x) { return x.id === b.dataset.ics; })[0];
+      if (e) download([e], S.me, "Exam duty - " + e.course.replace(/[^\w\- ]+/g, "") + ".ics");
+      return;
     }
+    if (b.id === "ics-all") { download(mine(S.me).filter(function (e) { return !past(e); }), S.me, "My exam duties.ics"); return; }
+    if (b.id === "print") { window.print(); return; }
+    if (b.id === "copy") {
+      var txt = "Exam duty: " + S.me + "\n\n" + mine(S.me).filter(function (e) { return !past(e); }).map(function (e) {
+        var h = hallOf(e, S.me);
+        return longDay(e.date) + ", " + timeOf(e) + ": " + e.course + ", " + (h ? "hall " + h : "hall to come");
+      }).join("\n");
+      var done = function (m) { b.textContent = m; setTimeout(function () { b.textContent = "Copy the list"; }, 1800); };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(function () { done("Copied"); }, function () { done("Could not copy"); });
+      else done("Not supported here");
+      return;
+    }
+    if (b.dataset.day !== undefined) { S.day = b.dataset.day === S.day ? "" : b.dataset.day; render(); return; }
+    if (b.dataset.scope !== undefined) { S.scope = b.dataset.scope; S.day = ""; render(); return; }
+    if (b.dataset.dept !== undefined) { S.dept = b.dataset.dept; render(); return; }
+    if (b.dataset.course !== undefined) { S.course = S.course === b.dataset.course ? "" : b.dataset.course; render(); return; }
+    if (b.id === "clearq") { S.q = ""; render(); var f = document.getElementById("find"); if (f) f.focus(); }
   });
 
-  document.body.addEventListener("click", function (ev) {
-    if (ev.target.id === "drop") { state.me = ""; state.view = "all"; render(); input.focus(); }
-  });
-
-  /* ---------- links ---------- */
-  // The link's # part: "k=<key>" and, for a personal link, "&p=<name>".
-  // (An old-style "#p=<name>" alone still reads the name.)
+  /* ---------- the link ---------- */
+  // "#k=<key>" and, for a personal link, "&p=<name>".
   function hashParts() {
     var out = {};
     location.hash.replace(/^#/, "").split("&").forEach(function (kv) {
       var i = kv.indexOf("=");
-      if (i > 0) {
-        try { out[kv.slice(0, i)] = decodeURIComponent(kv.slice(i + 1)); } catch (err) { /* bad escape */ }
-      }
+      if (i > 0) { try { out[kv.slice(0, i)] = decodeURIComponent(kv.slice(i + 1)); } catch (err) { /* bad escape */ } }
     });
     return out;
   }
-  function readHash() {
-    var h = hashParts();
-    if (h.p) { state.me = h.p; state.view = "mine"; }
-  }
   function writeHash() {
-    // Keep the key in the address, so the link copied from the bar works.
     var bits = [];
     if (KEY) bits.push("k=" + KEY);
-    if (state.me) bits.push("p=" + encodeURIComponent(state.me));
-    try {
-      history.replaceState(null, "", bits.length ? "#" + bits.join("&") : location.pathname + location.search);
-    } catch (err) { /* some hosts block history writes */ }
+    if (S.me) bits.push("p=" + encodeURIComponent(S.me));
+    try { history.replaceState(null, "", "#" + bits.join("&")); } catch (err) { /* blocked */ }
   }
   window.addEventListener("hashchange", function () {
-    if (!DATA) { location.reload(); return; }   // a key was pasted in: start again
-    readHash(); render();
+    if (!DATA) { location.reload(); return; }
+    var p = hashParts().p;
+    if (p && p !== S.me && known(p)) { S.me = p; store(p); renderAll(); }
   });
 
   /* ---------- start ---------- */
-  function setSpan() {
-    // Only dates that actually parse. A stray character in one Date cell once
-    // took the whole page down here, so nothing downstream trusts this input.
-    var ds = DATA.exams
-      .map(function (e) { return e.date; })
-      .filter(function (d) { return asDate(d); })
-      .sort();
-    if (!ds.length) return;
-    var a = asDate(ds[0]), b = asDate(ds[ds.length - 1]);
-    if (!a || !b) return;
-    document.getElementById("span").textContent =
-      a.getDate() + " " + MON[a.getMonth()] + " – " + b.getDate() + " " +
-      MON[b.getMonth()] + " " + b.getFullYear();
-  }
-
   function b64u(s) {
     s = String(s).replace(/-/g, "+").replace(/_/g, "/");
     while (s.length % 4) s += "=";
@@ -910,34 +733,41 @@
   }
   function locked(why) {
     document.body.classList.add("is-locked");
-    document.getElementById("body").innerHTML =
-      '<div class="locked"><b>This page is locked</b><p>' + esc(why) +
-      " Open it with the full link the Exam Committee sent you; it is the part after # that unlocks it.</p></div>";
+    document.getElementById("hero").innerHTML = '<h1>Exam duty</h1>';
+    document.getElementById("body").innerHTML = '<div class="locked"><b>This page is locked</b><p>' + esc(why) +
+      " Open it with the full link the Exam Committee sent you: the part after # is what unlocks it.</p></div>";
   }
   function unlock() {
     if (!SEALED || !SEALED.ct) return Promise.reject(new Error("No schedule has been published here yet."));
-    if (!window.crypto || !window.crypto.subtle)
-      return Promise.reject(new Error("This browser cannot open the schedule (it needs a secure https page)."));
+    if (!window.crypto || !window.crypto.subtle) return Promise.reject(new Error("This browser cannot open the schedule (it needs a secure https page)."));
     return crypto.subtle.importKey("raw", b64u(KEY), { name: "AES-GCM" }, false, ["decrypt"])
-      .then(function (k) {
-        return crypto.subtle.decrypt({ name: "AES-GCM", iv: b64u(SEALED.iv) }, k, b64u(SEALED.ct));
-      })
+      .then(function (k) { return crypto.subtle.decrypt({ name: "AES-GCM", iv: b64u(SEALED.iv) }, k, b64u(SEALED.ct)); })
       .then(function (buf) { return JSON.parse(new TextDecoder().decode(buf)); });
+  }
+  function header() {
+    var t = String(DATA.sourceFile || "").split(" - ")[1];
+    if (t) document.getElementById("term").textContent = t + " proctor schedule";
+    var g = new Date(DATA.generatedAt);
+    if (!isNaN(g.getTime())) {
+      document.getElementById("updated").textContent = "Updated " + g.getDate() + " " + MON[g.getMonth()].slice(0, 3) + ", " +
+        ("0" + g.getHours()).slice(-2) + ":" + ("0" + g.getMinutes()).slice(-2);
+    }
   }
 
   (function boot() {
-    KEY = hashParts().k || "";
+    var h = hashParts();
+    KEY = h.k || "";
     if (!KEY) { locked("The link you opened is missing its key."); return; }
     unlock().then(function (data) {
       DATA = data;
-      DATES = findDates();
-      setSpan();
-      readHash();
-      render();
+      header();
+      // A personal link names the person; otherwise this phone may remember them.
+      var who = h.p && known(h.p) ? h.p : stored();
+      if (who && known(who)) { S.me = who; store(who); } else { store(""); }
+      S.view = S.me ? "mine" : "all";
+      renderAll();
     }, function (err) {
-      locked(err && err.name === "OperationError"
-        ? "This link is out of date or incomplete."
-        : (err && err.message) || "The schedule could not be opened.");
+      locked(err && err.name === "OperationError" ? "This link is out of date or incomplete." : (err && err.message) || "The schedule could not be opened.");
     });
   })();
 })();
