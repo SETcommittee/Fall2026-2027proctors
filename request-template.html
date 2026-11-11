@@ -205,33 +205,40 @@
     var p = periodOf(t, date), kind = p ? p.kind : "";
     var runs = function (lab) { return kind === "summative" ? false : kind === "exam_week" ? !lab : true; };
     var weekOff = kind === "exam_week" || kind === "summative";
-    var hallBusy = {}, people = {}, needP = 0, needH = 0, same = [], twin = null;
+    var hallBusy = {}, needH = 0, same = [], twin = null;
     t.hallBusy.forEach(function (c) { if (c[1] === day && runs(c[4]) && overlaps(s, e, c[2], c[3])) hallBusy[c[0]] = 1; });
     var groups = DATA.groups.filter(function (g) { return g.indexOf(lc(course)) > -1; });
     t.exams.forEach(function (x) {
       if (x.d !== date || !overlaps(s, e, x.s, x.e)) return;
       x.h.forEach(function (h) { hallBusy[h] = 1; });
-      x.p.forEach(function (i) { people[i] = 1; });
-      needP += x.np; needH += x.nh;
+      needH += x.nh;
       if (course && lc(x.c) === lc(course)) twin = x;
       else if (course && groups.some(function (g) { return g.indexOf(lc(x.c)) > -1; })) same.push(x);
     });
-    var free = 0;
-    t.pool.forEach(function (q, i) {
-      if (people[i]) return;
-      if (q.off.indexOf(day) > -1) return;
-      if (q.b.some(function (b) { return b[0] === day && overlaps(s, e, b[1], b[2]); })) return;
-      if (q.c.some(function (c) { return c[0] === day && runs(c[3]) && overlaps(s, e, c[1], c[2]); })) return;
-      if (!(kind === "summative" || (weekOff && q.f)) && q.t.some(function (c) { return c[0] === day && overlaps(s, e, c[1], c[2]); })) return;
-      free++;
-    });
+    var free = proctorsFree(t, date, s, e);
     var halls = t.halls.length - Object.keys(hallBusy).length;
     var me = t.names.indexOf(F.name), teach = null;
     if (me > -1) {
       (t.coordClasses[String(me)] || []).forEach(function (c) { if (!teach && c[0] === day && runs(c[3]) && overlaps(s, e, c[1], c[2])) teach = c; });
     }
-    return { period: p, halls: Math.max(0, halls - needH), proctors: Math.max(0, free - needP), hallBusy: hallBusy,
+    return { period: p, halls: Math.max(0, halls - needH), proctors: free, hallBusy: hallBusy,
       same: same, twin: twin, teach: teach };
+  }
+  // Proctors free: counted by the program (people are never sent one by one),
+  // for start times every DATA.grid.step minutes from the first exam hour and
+  // the lengths in DATA.grid.lengths. A time between steps uses the step
+  // before it, and the next length up, so it never shows more than there are.
+  function proctorsFree(t, date, s, e) {
+    var rows = t.free[date], g = DATA.grid;
+    if (!rows) return 0;
+    var i = Math.floor((s - mins(DATA.rules.hours[0])) / g.step);
+    var j = g.lengths.findIndex(function (L) { return L >= e - (mins(DATA.rules.hours[0]) + i * g.step); });
+    if (i < 0 || i >= rows.length) return 0;
+    if (j < 0) j = g.lengths.length - 1;
+    var row = rows[i];
+    while (j < row.length && row[j] == null) j++;
+    var v = j < row.length ? row[j] : row.filter(function (x) { return x != null; }).pop();
+    return v == null ? 0 : v;
   }
   function needs() {
     var p = +F.proctors || 1, r = +F.rooms || Math.max(1, +F.proctors || 1);
