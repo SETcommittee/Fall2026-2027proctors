@@ -1,0 +1,572 @@
+<title>Request an Exam Date | HTU</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23E8343F'/%3E%3Ctext x='16' y='21' font-family='Arial' font-weight='700' font-size='11' fill='white' text-anchor='middle'%3EHTU%3C/text%3E%3C/svg%3E">
+<meta name="theme-color" content="#E8343F">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700;800&display=swap">
+<style>
+  /* The exam request page. Same HTU look as the staff page (Exam Duty):
+     HTU red on white and light grey, Source Sans, square corners. Light
+     only. Phones first. Published by the Exam Committee program into
+     request/index.html, LOCKED like the staff page: the data is unlocked
+     here with the key after "#k=" in the link. */
+  :root {
+    color-scheme: light;
+    --ground: #F4F4F2; --sheet: #FFFFFF; --wash: #F7F7F6;
+    --ink: #161613; --ink-2: #4E5056; --ink-3: #74767B;
+    --rule: #E1E1DE; --rule-2: #EDEDEA;
+    --htu: #E8343F; --htu-deep: #B91F2A; --htu-soft: #FDECEC; --htu-tint: #FFF6F6;
+    --ok: #1F7A4D; --ok-soft: #E4F3EA; --warn: #8A5A00; --warn-soft: #FFF4DB;
+    --sans: "Source Sans 3", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    --w: 820px;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--ground); color: var(--ink); font-family: var(--sans);
+    font-size: 16px; line-height: 1.45; -webkit-font-smoothing: antialiased; }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  .wrap { max-width: var(--w); margin: 0 auto; padding: 0 20px; }
+  :focus-visible { outline: 2px solid var(--htu); outline-offset: 2px; }
+  .num { font-variant-numeric: tabular-nums; }
+
+  .strip { background: var(--htu); color: #fff; font-size: 13px; font-weight: 600; }
+  .strip .wrap { display: flex; gap: 10px; align-items: center; min-height: 32px; flex-wrap: wrap; }
+  .strip .soft { opacity: .85; font-weight: 500; }
+  .strip .upd { margin-left: auto; opacity: .9; font-weight: 500; }
+  .bar { background: var(--sheet); border-bottom: 1px solid var(--rule); }
+  .bar .wrap { display: flex; align-items: center; gap: 14px; min-height: 64px; }
+  .bar img { height: 36px; width: auto; display: block; }
+  .bar .wordmark { font-weight: 800; font-size: 24px; letter-spacing: .04em; color: var(--htu); }
+  .bar .sep { width: 1px; height: 30px; background: var(--rule); }
+  .bar .title { display: grid; line-height: 1.15; }
+  .bar .title b { font-size: 18px; font-weight: 800; }
+  .bar .title span { font-size: 13.5px; color: var(--ink-3); font-weight: 600; }
+
+  .hero { background: var(--sheet); border-bottom: 1px solid var(--rule); }
+  .hero .wrap { padding-top: 28px; padding-bottom: 24px; }
+  .hero h1 { margin: 0; font-size: clamp(28px, 6.4vw, 40px); line-height: 1.05; font-weight: 800; letter-spacing: -.01em; }
+  .hero h1::after { content: ""; display: block; width: 52px; height: 4px; background: var(--htu); margin-top: 12px; }
+  .hero .lede { margin: 12px 0 0; color: var(--ink-2); max-width: 60ch; }
+
+  main { padding: 22px 0 40px; }
+  .step { background: var(--sheet); border: 1px solid var(--rule); margin-top: 16px; }
+  .step > h2 { margin: 0; display: flex; gap: 12px; align-items: center; font-size: 18px; font-weight: 800;
+    padding: 14px 18px; border-bottom: 1px solid var(--rule-2); }
+  .step > h2 .n { display: inline-grid; place-items: center; width: 26px; height: 26px; background: var(--htu); color: #fff;
+    font-size: 14px; font-weight: 800; flex: none; }
+  .step .in { padding: 16px 18px 18px; display: grid; gap: 14px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  label.f { display: grid; gap: 5px; font-weight: 700; font-size: 14.5px; min-width: 0; }
+  label.f small, .hint { font-weight: 500; color: var(--ink-3); font-size: 13.5px; }
+  .req::after { content: " *"; color: var(--htu); }
+  input[type=text], input[type=date], input[type=time], input[type=number], select, textarea {
+    width: 100%; border: 1.5px solid var(--ink-3); background: var(--sheet); padding: 10px 12px; font-size: 16px; border-radius: 0; min-width: 0; }
+  textarea { min-height: 70px; resize: vertical; }
+  input:focus, select:focus, textarea:focus { border-color: var(--htu); outline: none; box-shadow: 0 0 0 3px var(--htu-soft); }
+  [aria-invalid="true"] { border-color: var(--htu) !important; background: var(--htu-tint) !important; }
+  .msg { font-size: 14px; padding: 9px 12px; border-left: 4px solid var(--ink-3); background: var(--wash); }
+  .msg.ok { border-color: var(--ok); background: var(--ok-soft); }
+  .msg.warn { border-color: #C98A00; background: var(--warn-soft); color: #4D3500; }
+  .msg.bad { border-color: var(--htu); background: var(--htu-soft); color: #7A1219; }
+  .msg b { font-weight: 700; }
+  .periods { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 14px; color: var(--ink-2); }
+  .periods b { color: var(--ink); }
+
+  /* availability: one button per start time on the chosen day */
+  .slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+  .slot { appearance: none; cursor: pointer; text-align: left; border: 1.5px solid var(--rule); background: var(--sheet);
+    padding: 9px 11px; display: grid; gap: 2px; }
+  .slot b { font-size: 17px; font-weight: 800; }
+  .slot span { font-size: 12.5px; color: var(--ink-3); font-weight: 600; }
+  .slot.good { border-color: #9BCDB1; background: var(--ok-soft); }
+  .slot.tight { border-color: #E9C46A; background: var(--warn-soft); }
+  .slot.no { border-color: #F2B8BC; background: var(--htu-tint); }
+  .slot.no b { color: var(--ink-3); }
+  .slot[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 2px var(--ink); }
+  .legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: 13px; color: var(--ink-3); font-weight: 600; }
+  .legend i { display: inline-block; width: 12px; height: 12px; margin-right: 5px; vertical-align: -1px; border: 1.5px solid; }
+  .legend .g { background: var(--ok-soft); border-color: #9BCDB1; }
+  .legend .t { background: var(--warn-soft); border-color: #E9C46A; }
+  .legend .x { background: var(--htu-tint); border-color: #F2B8BC; }
+  .now { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border: 1px solid var(--rule); }
+  .now div { padding: 10px 14px; border-right: 1px solid var(--rule); }
+  .now div:last-child { border-right: 0; }
+  .now b { display: block; font-size: 26px; font-weight: 800; line-height: 1.05; }
+  .now span { font-size: 13px; color: var(--ink-3); font-weight: 600; }
+
+  .halls { display: flex; flex-wrap: wrap; gap: 6px; max-height: 210px; overflow-y: auto; padding: 2px; }
+  .hall { display: inline-flex; gap: 6px; align-items: center; border: 1.5px solid var(--rule); padding: 5px 9px; font-weight: 700; font-size: 14.5px; cursor: pointer; }
+  .hall input { accent-color: var(--ink); width: 16px; height: 16px; margin: 0; }
+  .hall.busy { color: var(--ink-3); border-style: dashed; }
+  .hall.on { border-color: var(--ink); background: var(--wash); }
+
+  .btn { appearance: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    font-size: 16px; font-weight: 700; text-decoration: none; padding: 12px 18px; border: 1.5px solid var(--htu);
+    color: var(--htu); background: var(--sheet); }
+  .btn:hover { background: var(--htu-tint); }
+  .btn.solid { background: var(--htu); color: #fff; }
+  .btn.solid:hover { background: var(--htu-deep); border-color: var(--htu-deep); }
+  .btn[disabled] { opacity: .5; cursor: not-allowed; }
+  .send { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .summary { margin: 0; padding: 12px 14px; background: var(--wash); border: 1px solid var(--rule); white-space: pre-wrap;
+    font: 14px/1.5 ui-monospace, Consolas, monospace; word-break: break-word; max-height: 300px; overflow: auto; }
+  .done { border-top: 5px solid var(--ok); }
+  .problems { margin: 0; padding-left: 20px; color: #7A1219; font-size: 14.5px; }
+  .locked { margin-top: 26px; padding: 26px 22px; background: var(--sheet); border: 1px solid var(--rule); border-top: 5px solid var(--htu); }
+  .locked b { display: block; font-size: 20px; margin-bottom: 6px; }
+  .locked p { margin: 0; color: var(--ink-2); max-width: 56ch; }
+  .foot { color: var(--ink-3); font-size: 13.5px; padding: 0 0 40px; }
+  .foot a { color: var(--ink-2); }
+  @media (max-width: 600px) {
+    .wrap { padding: 0 16px; }
+    .bar img { height: 30px; }
+    .strip .soft { display: none; }
+    .grid2, .grid3 { grid-template-columns: 1fr; }
+    .step .in { padding: 14px; }
+    .step > h2 { padding: 12px 14px; }
+    .slots { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .btn { width: 100%; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+</style>
+
+<div class="strip"><div class="wrap">Exam Committee <span class="soft">School of Engineering &amp; Technology</span><span class="upd" id="updated"></span></div></div>
+<header class="bar"><div class="wrap">
+  <img src="https://www.htu.edu.jo/_next/static/media/HTU%20Logo.9bbd05d3.svg" alt="HTU, Al Hussein Technical University"
+       onerror="this.replaceWith(Object.assign(document.createElement('span'), {className: 'wordmark', textContent: 'HTU'}))">
+  <span class="sep"></span>
+  <span class="title"><b>Exam Requests</b><span>Ask for your exam's date and time</span></span>
+</div></header>
+
+<section class="hero"><div class="wrap">
+  <h1>Request an exam date</h1>
+  <p class="lede" id="lede">Opening the page…</p>
+</div></section>
+
+<main><div class="wrap" id="body"></div></main>
+<div class="wrap foot" id="foot"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  // The data arrives LOCKED (AES-256-GCM, {v, iv, ct} in base64url), like the
+  // staff page. The key is the part of the link after "#k=", which the
+  // browser never sends anywhere. Nothing typed here leaves this phone or
+  // computer until the person sends the email at the end.
+  var SEALED = /*__DATA__*/ null;
+  var DATA = null;
+  var REMEMBER = "htu-exam-request-me";
+  var WD = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  var MON = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  var TODAY = new Date(); TODAY.setHours(0, 0, 0, 0);
+  var F = { term: "", name: "", course: "", date: "", start: "", end: "", len: "120", students: "", proctors: "", rooms: "", halls: [], why: "", note: "" };
+  var sent = null;
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  function iso(d) { return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); }
+  function asDate(s) { var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || ""); if (!m) return null; var d = new Date(+m[1], +m[2] - 1, +m[3]); return isNaN(d) ? null : d; }
+  function longDay(s) { var d = asDate(s); return d ? WD[d.getDay()] + " " + d.getDate() + " " + MON[d.getMonth()] + " " + d.getFullYear() : ""; }
+  function shortDay(s) { var d = asDate(s); return d ? d.getDate() + " " + MON[d.getMonth()].slice(0, 3) : ""; }
+  function mins(t) { var m = /^(\d{1,2}):(\d{2})$/.exec(t || ""); return m ? +m[1] * 60 + +m[2] : null; }
+  function hhmm(n) { return ("0" + Math.floor(n / 60)).slice(-2) + ":" + ("0" + n % 60).slice(-2); }
+  function plural(n, one, many) { return n + " " + (n === 1 ? one : (many || one + "s")); }
+  function lc(s) { return String(s || "").trim().toLowerCase(); }
+  function remember(v) { try { v ? localStorage.setItem(REMEMBER, v) : localStorage.removeItem(REMEMBER); } catch (e) { /* private mode */ } }
+  function remembered() { try { return localStorage.getItem(REMEMBER) || ""; } catch (e) { return ""; } }
+  function term() { return DATA.terms.filter(function (t) { return String(t.id) === String(F.term); })[0] || null; }
+  function overlaps(a, b, c, d) { return a < d && c < b; }
+
+  // The period a date is in: the exam week wins over the formative period it sits in.
+  var RANK = { exam_week: 0, summative: 1, formative: 2 };
+  function periodOf(t, date) {
+    var hits = t.periods.filter(function (p) { return p.start <= date && date <= p.end; });
+    hits.sort(function (a, b) { return RANK[a.kind] - RANK[b.kind]; });
+    return hits[0] || null;
+  }
+  function range(t) {
+    var a = t.periods.map(function (p) { return p.start; }).sort()[0] || "";
+    var b = t.periods.map(function (p) { return p.end; }).sort().pop() || "";
+    var today = iso(TODAY);
+    return { min: a && a > today ? a : today, max: b };
+  }
+
+  /* ---------- who and what is free at a time (the program's own rule) ---------- */
+  // Formative period: every class runs. Exam week: labs stop, lectures go on.
+  // Summative period: no classes. A person is busy on their day off, at a
+  // time marked not available, teaching, or on another exam.
+  function freeAt(t, date, s, e, course) {
+    var d = asDate(date), day = d.getDay();
+    var p = periodOf(t, date), kind = p ? p.kind : "";
+    var runs = function (lab) { return kind === "summative" ? false : kind === "exam_week" ? !lab : true; };
+    var weekOff = kind === "exam_week" || kind === "summative";
+    var hallBusy = {}, people = {}, needP = 0, needH = 0, same = [], twin = null;
+    t.hallBusy.forEach(function (c) { if (c[1] === day && runs(c[4]) && overlaps(s, e, c[2], c[3])) hallBusy[c[0]] = 1; });
+    var groups = DATA.groups.filter(function (g) { return g.indexOf(lc(course)) > -1; });
+    t.exams.forEach(function (x) {
+      if (x.d !== date || !overlaps(s, e, x.s, x.e)) return;
+      x.h.forEach(function (h) { hallBusy[h] = 1; });
+      x.p.forEach(function (i) { people[i] = 1; });
+      needP += x.np; needH += x.nh;
+      if (course && lc(x.c) === lc(course)) twin = x;
+      else if (course && groups.some(function (g) { return g.indexOf(lc(x.c)) > -1; })) same.push(x);
+    });
+    var free = 0;
+    t.pool.forEach(function (q, i) {
+      if (people[i]) return;
+      if (q.off.indexOf(day) > -1) return;
+      if (q.b.some(function (b) { return b[0] === day && overlaps(s, e, b[1], b[2]); })) return;
+      if (q.c.some(function (c) { return c[0] === day && runs(c[3]) && overlaps(s, e, c[1], c[2]); })) return;
+      if (!(kind === "summative" || (weekOff && q.f)) && q.t.some(function (c) { return c[0] === day && overlaps(s, e, c[1], c[2]); })) return;
+      free++;
+    });
+    var halls = t.halls.length - Object.keys(hallBusy).length;
+    var me = t.names.indexOf(F.name), teach = null;
+    if (me > -1) {
+      (t.coordClasses[String(me)] || []).forEach(function (c) { if (!teach && c[0] === day && runs(c[3]) && overlaps(s, e, c[1], c[2])) teach = c; });
+    }
+    return { period: p, halls: Math.max(0, halls - needH), proctors: Math.max(0, free - needP), hallBusy: hallBusy,
+      same: same, twin: twin, teach: teach };
+  }
+  function needs() {
+    var p = +F.proctors || 1, r = +F.rooms || Math.max(1, +F.proctors || 1);
+    return { p: p, r: r };
+  }
+  function grade(a) {
+    var n = needs();
+    if (a.halls < n.r || a.proctors < n.p) return "no";
+    if (a.halls < n.r + 2 || a.proctors < n.p + 2) return "tight";
+    return "good";
+  }
+
+  /* ---------- the page ---------- */
+  function opt(v, label, cur) { return '<option value="' + esc(v) + '"' + (String(v) === String(cur) ? " selected" : "") + ">" + esc(label) + "</option>"; }
+
+  function render() {
+    var body = document.getElementById("body");
+    if (sent) { body.innerHTML = doneHtml(); return; }
+    var t = term();
+    var r = DATA.rules;
+    var h = '';
+    // 1. semester
+    h += '<section class="step"><h2><span class="n">1</span>Semester</h2><div class="in">' +
+      '<label class="f"><span class="req">Semester of the exam</span><select id="f-term">' +
+      (DATA.terms.length === 1 ? "" : opt("", "Choose the semester", F.term)) +
+      DATA.terms.map(function (x) { return opt(x.id, x.label, F.term); }).join("") + "</select></label>" +
+      (t ? '<div class="periods">' + t.periods.map(function (p) {
+        return "<span><b>" + esc(p.label) + ":</b> " + esc(shortDay(p.start)) + " to " + esc(shortDay(p.end)) + "</span>";
+      }).join("") + "</div>" : "") + "</div></section>";
+    if (!t) { body.innerHTML = h; wire(); return; }
+
+    // 2. course and coordinator
+    h += '<section class="step"><h2><span class="n">2</span>Course</h2><div class="in"><div class="grid2">' +
+      '<label class="f"><span class="req">Your name (the course coordinator)</span><input type="text" id="f-name" list="l-names" autocomplete="off" value="' + esc(F.name) + '" placeholder="Start typing your name"></label>' +
+      '<label class="f"><span class="req">Course</span><input type="text" id="f-course" list="l-courses" autocomplete="off" value="' + esc(F.course) + '" placeholder="Start typing the course"></label>' +
+      '</div><datalist id="l-names">' + t.names.map(function (n) { return '<option value="' + esc(n) + '">'; }).join("") + "</datalist>" +
+      '<datalist id="l-courses">' + t.courses.map(function (n) { return '<option value="' + esc(n) + '">'; }).join("") + "</datalist>" +
+      '<div id="m-who"></div>' +
+      '<div class="grid3">' +
+      '<label class="f"><span class="' + (r.studentsRequired ? "req" : "") + '">Students</span><input type="number" id="f-students" min="1" max="1000" inputmode="numeric" value="' + esc(F.students) + '"></label>' +
+      '<label class="f"><span class="' + (r.proctorsRequired ? "req" : "") + '">Proctors needed</span><input type="number" id="f-proctors" min="1" max="' + r.maxCount + '" inputmode="numeric" value="' + esc(F.proctors) + '"></label>' +
+      '<label class="f"><span class="' + (r.roomsRequired ? "req" : "") + '">Rooms needed</span><input type="number" id="f-rooms" min="1" max="' + r.maxCount + '" inputmode="numeric" value="' + esc(F.rooms) + '"></label>' +
+      "</div>" + (!r.proctorsRequired || !r.roomsRequired || !r.studentsRequired ? '<p class="hint" style="margin:0">Leave a box without * empty if you are not sure: the committee decides.</p>' : "") +
+      "</div></section>";
+
+    // 3. date and time, with what is free
+    var rg = range(t);
+    h += '<section class="step"><h2><span class="n">3</span>Date and time</h2><div class="in">' +
+      '<div class="grid2"><label class="f"><span class="req">Date</span><input type="date" id="f-date" min="' + esc(rg.min) + '" max="' + esc(rg.max) + '" value="' + esc(F.date) + '"></label>' +
+      '<label class="f"><span class="req">How long</span><select id="f-len">' +
+      [60, 90, 120, 150, 180, 240].map(function (m) { return opt(m, (m / 60) + (m === 60 ? " hour" : " hours"), F.len); }).join("") + "</select></label></div>" +
+      '<div id="m-date"></div><div id="avail"></div>' +
+      '<div class="grid2"><label class="f"><span class="req">Starts</span><input type="time" id="f-start" step="300" value="' + esc(F.start) + '"></label>' +
+      '<label class="f"><span class="req">Finishes</span><input type="time" id="f-end" step="300" value="' + esc(F.end) + '"></label></div>' +
+      '<div id="m-time"></div></div></section>';
+
+    // 4. halls, and anything else
+    h += '<section class="step"><h2><span class="n">4</span>Anything else</h2><div class="in">' +
+      '<div class="f"><span>Particular halls <small>Only if the exam needs them (a lab, special equipment). Otherwise leave them: the committee books free halls. Up to ' + r.maxHalls + '.</small></span>' +
+      '<div class="halls" id="halls"></div></div>' +
+      '<label class="f" id="why-box"><span>Why this time? <small>Needed when the exam is outside the exam week.</small></span><textarea id="f-why" maxlength="500">' + esc(F.why) + "</textarea></label>" +
+      '<label class="f"><span>Notes for the committee</span><textarea id="f-note" maxlength="500">' + esc(F.note) + "</textarea></label>" +
+      "</div></section>";
+
+    // 5. send
+    h += '<section class="step"><h2><span class="n">5</span>Send</h2><div class="in">' +
+      '<div id="problems"></div>' +
+      '<p class="hint" style="margin:0">Pressing the button opens an email to the Exam Committee (<b>' + esc(DATA.committeeEmail) + '</b>) with your request written in it. Send it from your HTU email, without changing it.</p>' +
+      '<div class="send"><button class="btn solid" id="go" type="button">Check and send the request</button></div></div></section>';
+    body.innerHTML = h;
+    wire();
+    drawWho(); drawDate(); drawHalls(); drawTime();
+  }
+
+  function val(id) { var el = document.getElementById(id); return el ? el.value.trim() : ""; }
+
+  function wire() {
+    var body = document.getElementById("body");
+    body.oninput = body.onchange = function (e) {
+      var el = e.target, id = el.id;
+      if (id === "f-term") { F.term = el.value; F.date = ""; F.start = ""; F.end = ""; F.halls = []; render(); return; }
+      if (!id || id.indexOf("f-") !== 0) return;
+      F[id.slice(2)] = el.value.trim();
+      el.removeAttribute("aria-invalid");
+      if (id === "f-name") { drawWho(); drawTime(); }
+      if (id === "f-course") { drawWho(); drawAvail(); drawTime(); }
+      if (id === "f-date") { drawDate(); drawHalls(); drawTime(); }
+      if (id === "f-len") { if (F.start) setEnd(); drawAvail(); drawHalls(); drawTime(); }
+      if (id === "f-proctors" || id === "f-rooms") { drawAvail(); drawTime(); }
+      if (id === "f-start") { if (e.type === "change" || F.start.length === 5) setEnd(); drawAvail(); drawHalls(); drawTime(); }
+      if (id === "f-end") { drawHalls(); drawTime(); }
+    };
+    body.onclick = function (e) {
+      var s = e.target.closest("[data-start]");
+      if (s) { F.start = s.dataset.start; document.getElementById("f-start").value = F.start; setEnd(); drawAvail(); drawHalls(); drawTime(); return; }
+      var hb = e.target.closest("[data-hall]");
+      if (hb && e.target.tagName === "INPUT") {
+        var name = hb.dataset.hall, i = F.halls.indexOf(name);
+        if (i > -1) F.halls.splice(i, 1);
+        else if (F.halls.length < DATA.rules.maxHalls) F.halls.push(name);
+        drawHalls();
+        return;
+      }
+      if (e.target.id === "go") submit();
+      if (e.target.id === "copy") copy();
+      if (e.target.id === "again") { sent = null; F.date = ""; F.start = ""; F.end = ""; F.halls = []; F.why = ""; F.note = ""; F.course = ""; F.students = ""; F.proctors = ""; F.rooms = ""; render(); window.scrollTo(0, 0); }
+    };
+  }
+
+  function setEnd() {
+    var s = mins(F.start);
+    if (s === null) return;
+    F.end = hhmm(Math.min(s + (+F.len || 120), 23 * 60 + 55));
+    var el = document.getElementById("f-end");
+    if (el) el.value = F.end;
+  }
+
+  function drawWho() {
+    var t = term(), box = document.getElementById("m-who");
+    if (!box) return;
+    var m = [];
+    if (F.name && t.names.indexOf(F.name) < 0) m.push('<div class="msg warn">' + esc(F.name) + " is not in the university schedule for " + esc(t.label) + ". Choose your name from the list as it appears there.</div>");
+    if (F.course && !t.courses.some(function (c) { return lc(c) === lc(F.course); })) m.push('<div class="msg warn">' + esc(F.course) + " is not a course in the schedule for " + esc(t.label) + ". Choose it from the list if you can.</div>");
+    if (F.name) remember(F.name);
+    box.innerHTML = m.join("");
+  }
+
+  function drawDate() {
+    var t = term(), box = document.getElementById("m-date");
+    if (!box) return;
+    if (!F.date) { box.innerHTML = '<p class="hint" style="margin:0">Choose a date: the times below then show how many halls and proctors are free.</p>'; drawAvail(); return; }
+    var d = asDate(F.date), p = periodOf(t, F.date), r = DATA.rules, out = [];
+    if (!d) { box.innerHTML = ""; return; }
+    if (d < TODAY) out.push('<div class="msg bad">That date has passed.</div>');
+    if (!p) out.push('<div class="msg bad"><b>' + esc(longDay(F.date)) + " is not in " + esc(t.label) + ".</b> Exams are held in its formative assessment period (with its exam week) or its summative feedback period. Choose another date, or another semester.</div>");
+    else if (p.kind === "exam_week") out.push('<div class="msg ok"><b>' + esc(longDay(F.date)) + ":</b> exam week. Labs stop; lectures go on.</div>");
+    else if (p.kind === "summative") out.push('<div class="msg ok"><b>' + esc(longDay(F.date)) + ":</b> summative feedback period. No labs or lectures.</div>");
+    else out.push('<div class="msg warn"><b>' + esc(longDay(F.date)) + ":</b> formative assessment period, outside the exam week: labs and lectures run as usual, so fewer halls and proctors are free. Say why below.</div>");
+    if (r.examDays.length && r.examDays.indexOf(d.getDay()) < 0) out.push('<div class="msg bad">' + WD[d.getDay()] + " is not an exam day. Exams are held on " + r.examDays.map(function (x) { return WD[x]; }).join(", ") + ".</div>");
+    box.innerHTML = out.join("");
+    var why = document.getElementById("why-box");
+    if (why) why.querySelector("span").className = p && p.kind === "formative" ? "req" : "";
+    drawAvail();
+  }
+
+  function drawAvail() {
+    var t = term(), box = document.getElementById("avail");
+    if (!box) return;
+    if (!F.date || !asDate(F.date) || !periodOf(t, F.date)) { box.innerHTML = ""; return; }
+    var r = DATA.rules, len = +F.len || 120, a = mins(r.hours[0]), z = mins(r.hours[1]), out = [];
+    for (var s = a; s + len <= z; s += 30) {
+      var av = freeAt(t, F.date, s, s + len, F.course), g = grade(av);
+      out.push('<button type="button" class="slot ' + g + '" data-start="' + hhmm(s) + '" aria-pressed="' + (F.start === hhmm(s)) + '"' +
+        ' aria-label="' + hhmm(s) + " to " + hhmm(s + len) + ": " + av.halls + " halls and " + av.proctors + ' proctors free">' +
+        "<b>" + hhmm(s) + "–" + hhmm(s + len) + "</b><span>" + plural(av.halls, "hall") + " · " + plural(av.proctors, "proctor") + " free</span>" +
+        (av.twin ? "<span>your course already has an exam then</span>" : av.same.length ? "<span>same students: " + esc(av.same[0].c) + "</span>" : av.teach ? "<span>you teach then</span>" : "") + "</button>");
+    }
+    var n = needs();
+    box.innerHTML = '<div class="f"><span>Free at each start time on ' + esc(longDay(F.date)) + " <small>For " + plural(n.r, "room") + " and " + plural(n.p, "proctor") + ". Tap a time to choose it.</small></span>" +
+      (out.length ? '<div class="slots">' + out.join("") + "</div>" : '<div class="msg bad">An exam this long does not fit in the exam hours (' + esc(r.hours.join("–")) + ").</div>") +
+      '<div class="legend"><span><i class="g"></i>Plenty free</span><span><i class="t"></i>Only just enough</span><span><i class="x"></i>Not enough free</span></div></div>';
+  }
+
+  function drawTime() {
+    var t = term(), box = document.getElementById("m-time");
+    if (!box) return;
+    var s = mins(F.start), e = mins(F.end), r = DATA.rules, out = [];
+    if (s === null || !F.date || !asDate(F.date)) { box.innerHTML = ""; return; }
+    if (e !== null && e <= s) { box.innerHTML = '<div class="msg bad">The exam finishes before it starts.</div>'; return; }
+    if (e === null) e = s + r.defaultMinutes;
+    if (s < mins(r.hours[0]) || e > mins(r.hours[1])) out.push('<div class="msg bad">Exams are held between ' + esc(r.hours[0]) + " and " + esc(r.hours[1]) + ".</div>");
+    if (periodOf(t, F.date)) {
+      var av = freeAt(t, F.date, s, e, F.course), n = needs();
+      out.push('<div class="now"><div><b class="num">' + av.halls + "</b><span>halls free then (you need " + n.r + ")</span></div>" +
+        '<div><b class="num">' + av.proctors + "</b><span>proctors free then (you need " + n.p + ")</span></div></div>");
+      if (av.halls < n.r || av.proctors < n.p) out.push('<div class="msg bad"><b>Not enough free at this time.</b> The committee may have to move it. A green time above is more likely to be kept.</div>');
+      if (av.twin) out.push('<div class="msg bad">' + esc(av.twin.c) + " already has an exam on " + esc(shortDay(F.date)) + " at " + hhmm(av.twin.s) + ". If this is a second sitting, say so in the notes.</div>");
+      av.same.forEach(function (x) { out.push('<div class="msg bad"><b>Same students:</b> ' + esc(x.c) + " has an exam then (" + hhmm(x.s) + "–" + hhmm(x.e) + "). Choose another time.</div>"); });
+      if (av.teach) out.push('<div class="msg warn">You teach then (' + hhmm(av.teach[1]) + "–" + hhmm(av.teach[2]) + ").</div>");
+    }
+    box.innerHTML = out.join("");
+  }
+
+  function drawHalls() {
+    var t = term(), box = document.getElementById("halls");
+    if (!box) return;
+    var s = mins(F.start), e = mins(F.end), busy = {};
+    if (F.date && asDate(F.date) && periodOf(t, F.date) && s !== null) busy = freeAt(t, F.date, s, e !== null && e > s ? e : s + DATA.rules.defaultMinutes, F.course).hallBusy;
+    box.innerHTML = t.halls.map(function (name, i) {
+      var on = F.halls.indexOf(name) > -1, b = !!busy[i];
+      return '<label class="hall' + (on ? " on" : "") + (b ? " busy" : "") + '" data-hall="' + esc(name) + '" title="' + (b ? "In use at the time chosen" : "Free at the time chosen") + '">' +
+        '<input type="checkbox"' + (on ? " checked" : "") + ">" + esc(name) + (b ? " (in use)" : "") + "</label>";
+    }).join("");
+  }
+
+  /* ---------- checking and sending ---------- */
+  function problems() {
+    var t = term(), r = DATA.rules, out = [], d = asDate(F.date), s = mins(F.start), e = mins(F.end);
+    var bad = function (id, text) { out.push(text); var el = document.getElementById(id); if (el) el.setAttribute("aria-invalid", "true"); };
+    if (!F.name) bad("f-name", "Write your name.");
+    else if (t.names.indexOf(F.name) < 0) bad("f-name", "Choose your name from the list (as the university schedule writes it).");
+    if (!F.course) bad("f-course", "Write the course.");
+    [["students", "Students", r.studentsRequired, 1000], ["proctors", "Proctors needed", r.proctorsRequired, r.maxCount], ["rooms", "Rooms needed", r.roomsRequired, r.maxCount]].forEach(function (x) {
+      var v = F[x[0]];
+      if (!v) { if (x[2]) bad("f-" + x[0], x[1] + ": give a number."); return; }
+      if (!/^\d+$/.test(v) || +v < 1 || +v > x[3]) bad("f-" + x[0], x[1] + ": a whole number from 1 to " + x[3] + ".");
+    });
+    if (!d) bad("f-date", "Choose the date.");
+    else {
+      if (d < TODAY) bad("f-date", "The date has passed.");
+      var p = periodOf(t, F.date);
+      if (!p) bad("f-date", "The date is not in " + t.label + "'s formative or summative period.");
+      else if (p.kind === "formative" && !F.why) bad("f-why", "Say why the exam is outside the exam week.");
+      if (r.examDays.length && r.examDays.indexOf(d.getDay()) < 0) bad("f-date", WD[d.getDay()] + " is not an exam day.");
+    }
+    if (s === null) bad("f-start", "Choose the start time.");
+    if (e === null) bad("f-end", "Choose the finish time.");
+    if (s !== null && e !== null) {
+      if (e <= s) bad("f-end", "The exam finishes before it starts.");
+      else if (s < mins(r.hours[0]) || e > mins(r.hours[1])) bad("f-start", "Exams are held between " + r.hours[0] + " and " + r.hours[1] + ".");
+    }
+    return out;
+  }
+
+  function b64url(text) {
+    var bytes = new TextEncoder().encode(text), bin = "";
+    for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+    return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  }
+  function newId() {
+    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+    var a = new Uint8Array(16); crypto.getRandomValues(a);
+    return Array.prototype.map.call(a, function (x) { return ("0" + x.toString(16)).slice(-2); }).join("");
+  }
+
+  function build() {
+    var t = term();
+    var code = { v: 1, id: newId(), t: t.id, n: F.name, c: F.course, d: F.date, s: F.start, e: F.end,
+      st: F.students ? +F.students : null, p: F.proctors ? +F.proctors : null, r: F.rooms ? +F.rooms : null,
+      h: F.halls.slice(), why: F.why, note: F.note };
+    var lines = [
+      "Exam request for the Exam Committee", "",
+      "Semester:     " + t.label,
+      "Course:       " + F.course,
+      "Coordinator:  " + F.name,
+      "Date:         " + longDay(F.date),
+      "Time:         " + F.start + " - " + F.end,
+      "Students:     " + (F.students || "not given"),
+      "Proctors:     " + (F.proctors || "the committee decides"),
+      "Rooms:        " + (F.rooms || "the committee decides")
+    ];
+    if (F.halls.length) lines.push("Halls asked:  " + F.halls.join(", "));
+    if (F.why) lines.push("Why this time: " + F.why);
+    if (F.note) lines.push("Notes:        " + F.note);
+    lines.push("", "Please send this email without changing it: the line below lets the committee's program read the request.",
+      "EXREQ1." + b64url(JSON.stringify(code)) + ".END");
+    return { subject: DATA.subjectTag + ": " + F.course + ", " + shortDay(F.date) + " " + F.start, body: lines.join("\n") };
+  }
+
+  function submit() {
+    var box = document.getElementById("problems");
+    var p = problems();
+    if (p.length) {
+      box.innerHTML = '<div class="msg bad"><b>Please check:</b><ul class="problems">' + p.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul></div>";
+      var first = document.querySelector('[aria-invalid="true"]');
+      if (first) first.focus();
+      return;
+    }
+    box.innerHTML = "";
+    sent = build();
+    render();
+    window.scrollTo(0, 0);
+    location.href = "mailto:" + encodeURIComponent(DATA.committeeEmail).replace("%40", "@") +
+      "?subject=" + encodeURIComponent(sent.subject) + "&body=" + encodeURIComponent(sent.body);
+  }
+
+  function doneHtml() {
+    return '<section class="step done"><h2>Your email is ready: press Send in it</h2><div class="in">' +
+      '<p style="margin:0">Your email app should have opened with the request written in it, to <b>' + esc(DATA.committeeEmail) + "</b>. " +
+      "Send it as it is. The committee's program reads it and the committee confirms the exam's hall and proctors by email.</p>" +
+      '<div class="msg"><b>No email opened?</b> Copy the text below and send it from your HTU email to <b>' + esc(DATA.committeeEmail) +
+      "</b> with this subject: <b>" + esc(sent.subject) + "</b></div>" +
+      '<pre class="summary" id="summary">' + esc(sent.body) + "</pre>" +
+      '<div class="send"><button class="btn" id="copy" type="button">Copy the text</button><button class="btn" id="again" type="button">Request another exam</button></div>' +
+      "</div></section>";
+  }
+
+  function copy() {
+    var b = document.getElementById("copy");
+    var done = function (m) { b.textContent = m; setTimeout(function () { b.textContent = "Copy the text"; }, 1800); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(sent.body).then(function () { done("Copied"); }, function () { done("Select it and copy"); });
+    else done("Select it and copy");
+  }
+
+  /* ---------- start ---------- */
+  function b64u(s) {
+    s = String(s).replace(/-/g, "+").replace(/_/g, "/");
+    while (s.length % 4) s += "=";
+    var bin = atob(s), out = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out;
+  }
+  function key() {
+    var m = /(?:^|[#&])k=([A-Za-z0-9_-]+)/.exec(location.hash);
+    return m ? m[1] : "";
+  }
+  function locked(why) {
+    document.getElementById("lede").textContent = "";
+    document.getElementById("body").innerHTML = '<div class="locked"><b>This page is locked</b><p>' + esc(why) +
+      " Open it with the full link the Exam Committee sent you: the part after # is what unlocks it.</p></div>";
+  }
+  (function boot() {
+    var k = key();
+    if (!k) { locked("The link you opened is missing its key."); return; }
+    if (!SEALED || !SEALED.ct) { locked("Nothing has been published here yet."); return; }
+    if (!window.crypto || !window.crypto.subtle) { locked("This browser cannot open the page (it needs a secure https page)."); return; }
+    crypto.subtle.importKey("raw", b64u(k), { name: "AES-GCM" }, false, ["decrypt"])
+      .then(function (ck) { return crypto.subtle.decrypt({ name: "AES-GCM", iv: b64u(SEALED.iv) }, ck, b64u(SEALED.ct)); })
+      .then(function (buf) {
+        DATA = JSON.parse(new TextDecoder().decode(buf));
+        var g = new Date(DATA.generatedAt);
+        if (!isNaN(g)) document.getElementById("updated").textContent = "Free halls and proctors as of " + g.getDate() + " " + MON[g.getMonth()].slice(0, 3) + ", " + ("0" + g.getHours()).slice(-2) + ":" + ("0" + g.getMinutes()).slice(-2);
+        document.getElementById("foot").innerHTML = 'Questions? Email the Exam Committee: <a href="mailto:' + esc(DATA.committeeEmail) + '">' + esc(DATA.committeeEmail) + "</a>.";
+        if (!DATA.terms.length) {
+          document.getElementById("lede").textContent = "";
+          document.getElementById("body").innerHTML = '<div class="locked"><b>No semester is taking requests just now</b><p>The Exam Committee opens the request page for each semester. Please check again later, or email the committee.</p></div>';
+          return;
+        }
+        document.getElementById("lede").textContent = "Choose your course, then a date and time. Each time shows how many halls and proctors are free, from the university schedule and the exams already planned. The committee confirms your exam by email.";
+        if (DATA.terms.length === 1) F.term = String(DATA.terms[0].id);
+        F.name = remembered();
+        render();
+      }, function (err) {
+        locked(err && err.name === "OperationError" ? "This link is out of date or incomplete." : "The page could not be opened.");
+      });
+  })();
+})();
+</script>
